@@ -1,0 +1,119 @@
+library (hyperbus_delay) {
+  comment                        : "";
+  delay_model                    : table_lookup;
+  simulation                     : false;
+  capacitive_load_unit (1,pF);
+  leakage_power_unit             : 1pW;
+  current_unit                   : "1mA";
+  pulling_resistance_unit        : "1kohm";
+  time_unit                      : "1ns";
+  voltage_unit                   : "1v";
+  library_features(report_delay_calculation);
+
+  input_threshold_pct_rise : 50;
+  input_threshold_pct_fall : 50;
+  output_threshold_pct_rise : 50;
+  output_threshold_pct_fall : 50;
+  slew_lower_threshold_pct_rise : 20;
+  slew_lower_threshold_pct_fall : 20;
+  slew_upper_threshold_pct_rise : 80;
+  slew_upper_threshold_pct_fall : 80;
+  slew_derate_from_library : 1.0;
+
+
+  nom_process                    : 1.0;
+  nom_temperature                : 25.0;
+  nom_voltage                    : 1.20;
+
+  lu_table_template(template_1) {
+    variable_1 : total_output_net_capacitance;
+    index_1("0.00100,  0.00400,  0.02000,  0.04000,  0.08000,  0.13200,  0.20000");
+  }
+  type ("delay_i") {
+    base_type : array;
+    data_type : bit;
+    bit_width : 8;
+    bit_from : 7;
+    bit_to : 0;
+  }
+
+  cell ("hyperbus_delay") {
+    area : 1082.391 
+    is_macro_cell : true;
+    pin("in_i") {
+      direction : input;
+      capacitance : 0.0103;
+    }
+    pin("out_o") {
+      direction : output;
+      capacitance : 0.0000;
+      timing() {
+        related_pin : "in_i";
+        timing_sense : positive_unate;
+        timing_type : combinational;
+        cell_rise(template_1) {
+          index_1("0.00100,  0.00400,  0.02000,  0.04000,  0.08000,  0.13200,  0.20000");
+          values("1.53387,1.55098,1.61064,1.67524,1.80200,1.96619,2.18079");
+        }
+        rise_transition(template_1) {
+          index_1("0.00100,  0.00400,  0.02000,  0.04000,  0.08000,  0.13200,  0.20000");
+          values("0.03232,0.04477,0.11091,0.19927,0.38090,0.61862,0.92996");
+        }
+        cell_fall(template_1) {
+          index_1("0.00100,  0.00400,  0.02000,  0.04000,  0.08000,  0.13200,  0.20000");
+          values("1.68512,1.70102,1.75562,1.81083,1.91593,2.05089,2.22690");
+        }
+        fall_transition(template_1) {
+          index_1("0.00100,  0.00400,  0.02000,  0.04000,  0.08000,  0.13200,  0.20000");
+          values("0.03163,0.04284,0.09532,0.16186,0.29938,0.48107,0.71957");
+        }
+      }
+    }
+    bus("delay_i") {
+      bus_type : delay_i;
+      direction : input;
+      capacitance : 0.0000;
+    pin("delay_i[7]") {
+      direction : input;
+      capacitance : 0.0000;
+    }
+    pin("delay_i[6]") {
+      direction : input;
+      capacitance : 0.0064;
+    }
+    pin("delay_i[5]") {
+      direction : input;
+      capacitance : 0.0107;
+    }
+    pin("delay_i[4]") {
+      direction : input;
+      capacitance : 0.0201;
+    }
+    pin("delay_i[3]") {
+      direction : input;
+      capacitance : 0.0115;
+    }
+    pin("delay_i[2]") {
+      direction : input;
+      capacitance : 0.0138;
+    }
+    pin("delay_i[1]") {
+      direction : input;
+      capacitance : 0.0047;
+    }
+    pin("delay_i[0]") {
+      direction : input;
+      capacitance : 0.0037;
+    }
+    }
+    pin("VSS") {
+      direction : inout;
+      capacitance : 0.0000;
+    }
+    pin("VDD") {
+      direction : inout;
+      capacitance : 0.0000;
+    }
+  }
+
+}

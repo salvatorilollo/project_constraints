@@ -1,0 +1,106 @@
+packages:
+  apb:
+    revision: null
+    version: null
+    source:
+      Path: rtl/apb
+    dependencies:
+    - common_cells
+  axi:
+    revision: a256a3b86394fedf19e361047fccfdd7f6ef83e4
+    version: 0.39.9
+    source:
+      Git: https://github.com/pulp-platform/axi.git
+    dependencies:
+    - common_cells
+    - common_verification
+    - tech_cells_generic
+  axi_obi:
+    revision: 84f21a6524bedcf17a569a62ac01b8a5610819c8
+    version: 0.1.0
+    source:
+      Git: https://github.com/pulp-platform/axi_obi.git
+    dependencies:
+    - axi
+    - common_cells
+    - obi
+  common_cells:
+    revision: null
+    version: null
+    source:
+      Path: rtl/common_cells
+    dependencies:
+    - common_verification
+    - tech_cells_generic
+  common_verification:
+    revision: null
+    version: null
+    source:
+      Path: rtl/common_verification
+    dependencies: []
+  cve2:
+    revision: null
+    version: null
+    source:
+      Path: rtl/cve2
+    dependencies:
+    - common_cells
+  hyperbus:
+    revision: 391a4ebcddc6643ddbf9ac3a35bf171d4cb8a986
+    version: null
+    source:
+      Git: https://github.com/pulp-platform/hyperbus.git
+    dependencies:
+    - axi
+    - common_cells
+    - register_interface
+    - tech_cells_generic
+  idma:
+    revision: null
+    version: null
+    source:
+      Path: rtl/idma
+    dependencies:
+    - common_cells
+    - obi
+  obi:
+    revision: null
+    version: null
+    source:
+      Path: rtl/obi
+    dependencies:
+    - common_cells
+    - common_verification
+  obi_peripherals:
+    revision: null
+    version: null
+    source:
+      Path: rtl/obi_uart
+    dependencies:
+    - common_cells
+    - obi
+  register_interface:
+    revision: d6e1d4cdaab7870f4faf3f88a1c788eaf5ac129d
+    version: 0.4.7
+    source:
+      Git: https://github.com/pulp-platform/register_interface.git
+    dependencies:
+    - apb
+    - axi
+    - common_cells
+    - common_verification
+  riscv-dbg:
+    revision: null
+    version: null
+    source:
+      Path: rtl/riscv-dbg
+    dependencies:
+    - common_cells
+    - tech_cells_generic
+  tech_cells_generic:
+    revision: null
+    version: null
+    source:
+      Path: rtl/tech_cells_generic
+    dependencies:
+    - common_verification

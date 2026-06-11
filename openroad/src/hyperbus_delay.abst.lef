@@ -1,0 +1,151 @@
+VERSION 5.8 ;
+BUSBITCHARS "[]" ;
+DIVIDERCHAR "/" ;
+UNITS
+    DATABASE MICRONS 1000 ;
+END UNITS
+
+MACRO hyperbus_delay
+  FOREIGN hyperbus_delay 0 0 ;
+  CLASS CORE ;
+  SYMMETRY X Y ;
+  SITE CoreSite ;
+  SIZE 30.66 BY 36.96 ;
+  PIN delay_i[0]
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER Metal3 ;
+        RECT  0 27.62 0.84 27.82 ;
+    END
+  END delay_i[0]
+  PIN delay_i[1]
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER Metal3 ;
+        RECT  0 21.74 0.84 21.94 ;
+    END
+  END delay_i[1]
+  PIN delay_i[2]
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER Metal3 ;
+        RECT  0 28.46 0.84 28.66 ;
+    END
+  END delay_i[2]
+  PIN delay_i[3]
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER Metal3 ;
+        RECT  0 24.26 0.84 24.46 ;
+    END
+  END delay_i[3]
+  PIN delay_i[4]
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER Metal3 ;
+        RECT  0 34.34 0.84 34.54 ;
+    END
+  END delay_i[4]
+  PIN delay_i[5]
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER Metal3 ;
+        RECT  0 33.5 0.84 33.7 ;
+    END
+  END delay_i[5]
+  PIN delay_i[6]
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER Metal3 ;
+        RECT  0 32.66 0.84 32.86 ;
+    END
+  END delay_i[6]
+  PIN delay_i[7]
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER Metal3 ;
+        RECT  0 35.18 0.84 35.38 ;
+    END
+  END delay_i[7]
+  PIN in_i
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER Metal3 ;
+        RECT  0 25.1 0.84 25.3 ;
+    END
+  END in_i
+  PIN out_o
+    DIRECTION OUTPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER Metal3 ;
+        RECT  29.82 35.18 30.66 35.38 ;
+    END
+  END out_o
+  PIN VSS
+    DIRECTION INOUT ;
+    USE GROUND ;
+    PORT
+      LAYER Metal1 ;
+        RECT  0 33.44 30.66 33.76 ;
+        RECT  0 26.72 30.66 27.04 ;
+        RECT  0 20 30.66 20.32 ;
+        RECT  0 13.28 30.66 13.6 ;
+        RECT  0 6.56 30.66 6.88 ;
+        RECT  0 -0.16 30.66 0.16 ;
+    END
+  END VSS
+  PIN VDD
+    DIRECTION INOUT ;
+    USE POWER ;
+    PORT
+      LAYER Metal1 ;
+        RECT  0 36.8 30.66 37.12 ;
+        RECT  0 30.08 30.66 30.4 ;
+        RECT  0 23.36 30.66 23.68 ;
+        RECT  0 16.64 30.66 16.96 ;
+        RECT  0 9.92 30.66 10.24 ;
+        RECT  0 3.2 30.66 3.52 ;
+    END
+  END VDD
+  OBS
+    LAYER Metal1 ;
+     RECT  0 -0.16 30.66 37.12 ;
+    LAYER Metal2 ;
+     RECT  0.11 1.49 26.77 2.33 ;
+     RECT  0.11 2.33 29.29 14.09 ;
+     RECT  0.11 14.09 29.71 24.46 ;
+     RECT  0.53 24.46 29.71 24.625 ;
+     RECT  0.53 24.625 30.13 25.01 ;
+     RECT  0.53 25.01 30.55 31.235 ;
+     RECT  0.95 31.235 30.55 34.96 ;
+     RECT  1.79 34.96 30.55 35.015 ;
+     RECT  1.79 35.015 30.13 35.845 ;
+     RECT  6.41 35.845 15.85 35.855 ;
+     RECT  14.81 35.855 15.85 36.22 ;
+     RECT  24.89 35.845 25.93 36.22 ;
+    LAYER Metal3 ;
+     RECT  0.065 5.78 0.63 15.22 ;
+     RECT  0.485 30.56 0.63 30.76 ;
+     RECT  0.63 5.78 1.195 34.54 ;
+     RECT  1.195 5.78 2.455 5.98 ;
+     RECT  1.195 15.02 3.715 34.54 ;
+     RECT  3.715 20.48 4.31 34.54 ;
+     RECT  4.31 20.48 6.365 34.96 ;
+     RECT  6.365 20.48 18.37 35.8 ;
+     RECT  18.37 20.48 28.915 35.38 ;
+     RECT  28.915 25.1 30.03 35.38 ;
+     RECT  30.03 25.1 30.175 34.54 ;
+     RECT  30.175 28.46 30.595 34.54 ;
+  END
+END hyperbus_delay
+END LIBRARY
