@@ -9,7 +9,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "$ROOT/rtl/common_verification/src/clk_rst_gen.sv" \
     "$ROOT/rtl/common_verification/src/sim_timeout.sv" \
@@ -25,7 +24,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "$ROOT/rtl/common_verification/src/rand_id_queue.sv" \
     "$ROOT/rtl/common_verification/src/rand_stream_mst.sv" \
@@ -43,7 +41,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "$ROOT/rtl/tech_cells_generic/tc_sram.sv" \
     "$ROOT/rtl/tech_cells_generic/tc_sram_impl.sv" \
@@ -57,7 +54,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "$ROOT/rtl/tech_cells_generic/tc_clk.sv" \
 }]} {return 1}
@@ -70,7 +66,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/common_cells/binary_to_gray.sv" \
@@ -84,7 +79,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/common_cells/cb_filter_pkg.sv" \
@@ -149,7 +143,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/common_cells/cb_filter.sv" \
@@ -192,7 +185,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/apb/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -207,7 +199,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -280,7 +271,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -298,7 +288,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/obi/include" \
@@ -324,7 +313,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
@@ -362,7 +350,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -380,7 +367,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/cve2/include" \
@@ -415,7 +401,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
@@ -449,7 +434,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/idma/include" \
@@ -481,7 +465,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/obi/include" \
@@ -503,7 +486,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/dm_pkg.sv" \
@@ -522,7 +504,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/dmi_jtag_tap.sv" \
@@ -536,7 +517,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/dm_sba.sv" \
@@ -553,7 +533,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/dmi_test.sv" \
@@ -568,7 +547,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/tb/jtag_test_simple.sv" \
@@ -582,7 +560,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
@@ -602,7 +579,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
@@ -627,7 +603,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
@@ -646,7 +621,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
@@ -665,7 +639,6 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_SIMULATION" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
