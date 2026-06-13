@@ -40,7 +40,7 @@ bf32b9fbc578ebc28fcbbb5381319b3bf0f6ed3e	not-for-merge	branch 'vcs_sim-tbenz' of
 f706bee9a98236b2a3a44f01a0ae70e52373bcee	not-for-merge	branch 'wip_open_ci' of https://github.com/pulp-platform/axi
 1927ea0fa86c3e78af6aff5647f09e0f70224015	not-for-merge	branch 'xbar_parameters' of https://github.com/pulp-platform/axi
 c02cbff7c4aa02da4f0b14503cfea66ccdc2a690	not-for-merge	branch 'xbar_pipeline' of https://github.com/pulp-platform/axi
-6ed0a27a848137cc076d4a39ae8e239cf53909a5	not-for-merge	branch 'yosys-slang-ci' of https://github.com/pulp-platform/axi
+7eadc966e6fb5c29498242ecd23405096e7b026c	not-for-merge	branch 'yosys-slang-ci' of https://github.com/pulp-platform/axi
 b6fafdaab75d3b5ed77afb70e50a69d72888b71b	not-for-merge	branch 'yt/xcelium' of https://github.com/pulp-platform/axi
 080aa99a2b4017d8a85c7249c7f19cd91de1d3f2	not-for-merge	branch 'zx/axi_burst_unwrap' of https://github.com/pulp-platform/axi
 3cd5446dadfb06cacdcbd38ba81d54570cc507ca	not-for-merge	tag 'archive/2019-03-07_perf_mon' of https://github.com/pulp-platform/axi
@@ -51,7 +51,7 @@ e9fa1050e75bc5fefb3cc02de220e70a597bf2b0	not-for-merge	tag 'archive/2021-01-20_a
 0b3f2c983259be5c7e9928a91fde577bdcffdd98	not-for-merge	tag 'archive/2022-05-24_axi_llc_rebase' of https://github.com/pulp-platform/axi
 b7018da87d789da25ca340ff01341d3ec5d5f9a6	not-for-merge	tag 'archive/2022-08-05_axi_to_mem_rebase' of https://github.com/pulp-platform/axi
 44769063245e3e1f8732749b5e89c4b1d5b829c7	not-for-merge	tag 'archive/2023-07-25_axi_rt-tbenz' of https://github.com/pulp-platform/axi
-10955d49ed1417a3b99d71e3c67d15f51a79a47d	not-for-merge	tag 'picobello-multicast' of https://github.com/pulp-platform/axi
+06410c36819924e32db2afa428d244dbdbcd5d4e	not-for-merge	tag 'picobello-multicast' of https://github.com/pulp-platform/axi
 bec548fa2a9b18cbd7531105bb1fdf481ea8ad49	not-for-merge	tag 'picobello-tapeout' of https://github.com/pulp-platform/axi
 74b0951ed4c67aa5e16d5179e5d4f8091a23679e	not-for-merge	tag 'v0.1.0' of https://github.com/pulp-platform/axi
 acec8d1c0f598422428481fb6399968150d93bda	not-for-merge	tag 'v0.10.0' of https://github.com/pulp-platform/axi

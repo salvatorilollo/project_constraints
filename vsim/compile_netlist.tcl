@@ -3,6 +3,7 @@ set ROOT ".."
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -10,11 +11,33 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_VSIM" \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
-    "$ROOT/rtl/common_verification/clk_rst_gen.sv" \
+    "$ROOT/rtl/common_verification/src/clk_rst_gen.sv" \
+    "$ROOT/rtl/common_verification/src/sim_timeout.sv" \
+    "$ROOT/rtl/common_verification/src/stream_watchdog.sv" \
+    "$ROOT/rtl/common_verification/src/signal_highlighter.sv" \
 }]} {return 1}
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
+    "+define+TARGET_IHP13" \
+    "+define+TARGET_NETLIST_YOSYS" \
+    "+define+TARGET_SIMULATION" \
+    "+define+TARGET_VERILATOR" \
+    "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
+    "+define+SIMULATION" \
+    "$ROOT/rtl/common_verification/src/rand_id_queue.sv" \
+    "$ROOT/rtl/common_verification/src/rand_stream_mst.sv" \
+    "$ROOT/rtl/common_verification/src/rand_synch_holdable_driver.sv" \
+    "$ROOT/rtl/common_verification/src/rand_verif_pkg.sv" \
+    "$ROOT/rtl/common_verification/src/rand_synch_driver.sv" \
+    "$ROOT/rtl/common_verification/src/rand_stream_slv.sv" \
+}]} {return 1}
+
+if {[catch { vlog -incr -sv \
+    -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -28,6 +51,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -40,6 +64,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -53,6 +78,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -117,6 +143,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -159,6 +186,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -173,6 +201,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -245,6 +274,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -262,6 +292,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -287,6 +318,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -324,6 +356,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -341,6 +374,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -375,21 +409,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_IHP13" \
-    "+define+TARGET_NETLIST_YOSYS" \
-    "+define+TARGET_SIMULATION" \
-    "+define+TARGET_VERILATOR" \
-    "+define+TARGET_VSIM" \
-    "+define+SYNTHESIS" \
-    "+define+SIMULATION" \
-    "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
-    "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
-    "+incdir+$ROOT/rtl/common_cells/include" \
-    "$ROOT/.bender/git/checkouts/hyperbus-d20b59e5a581ace5/src/hyperbus_delay.sv" \
-}]} {return 1}
-
-if {[catch { vlog -incr -sv \
-    -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -423,6 +443,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -454,6 +475,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -475,6 +497,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -493,6 +516,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -506,6 +530,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -522,6 +547,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -531,10 +557,12 @@ if {[catch { vlog -incr -sv \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/dmi_test.sv" \
+    "$ROOT/rtl/riscv-dbg/tb/jtag_test_simple.sv" \
 }]} {return 1}
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -548,6 +576,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -567,6 +596,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -591,6 +621,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -609,6 +640,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
@@ -627,6 +659,7 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
+    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \

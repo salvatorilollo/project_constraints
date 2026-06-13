@@ -38,6 +38,7 @@ sources:
   - target: simulation
     files:
     - dmi_test.sv
+    - tb/jtag_test_simple.sv
 
   - target: test
     files:

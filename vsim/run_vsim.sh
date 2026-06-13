@@ -73,6 +73,7 @@ generate_rtl_flist() {
         -t simulation \
         -t verilator \
         -DSYNTHESIS \
+        -t hyperbus_exclude_dline \
         -DSIMULATION \
         --vlog-arg="-svinputport=compat"
         > compile_rtl.tcl"
@@ -93,6 +94,7 @@ generate_netlist_flist() {
         -t simulation \
         -t verilator \
         -t netlist_yosys \
+        -t hyperbus_exclude_dline \
         -DSYNTHESIS \
         -DSIMULATION \
         --vlog-arg="-svinputport=compat"
