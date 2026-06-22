@@ -70,7 +70,7 @@ report_metrics "03_${proj_name}.cts_unrepaired"
 
 # Repair all setup timing
 utl::report "Repair setup"
-repair_timing -setup -verbose
+repair_timing -setup -repair_tns 50 -max_passes 10 -verbose
 
 # Place inserted cells
 utl::report "Detailed placement"

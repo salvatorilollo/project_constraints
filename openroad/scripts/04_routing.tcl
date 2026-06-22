@@ -111,6 +111,7 @@ utl::report "Saving detailed route"
 save_checkpoint 04_${proj_name}.routed
 report_metrics "04_${proj_name}.routed"
 report_image "04_${proj_name}.routed" true false false true
+estimate_parasitics -global_routing -spef_file out/croc.spef
 
 utl::report "###############################################################################"
 utl::report "# Stage 04 complete: Checkpoint saved to ${save_dir}/04_${proj_name}.routed.zip"

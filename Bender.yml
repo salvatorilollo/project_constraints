@@ -86,6 +86,7 @@ sources:
       - rtl/test/tb_croc_soc.sv
       - rtl/test/tb_hyperbus_croc_soc.sv
       - rtl/models/s27ks0641/s27ks0641.v
+      - rtl/riscv-dbg/tb/jtag_test_simple.sv
 
   - target: genesys2
     files:

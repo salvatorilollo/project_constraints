@@ -25,6 +25,21 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
     "+define+SIMULATION" \
+    "$ROOT/rtl/common_verification/src/clk_rst_gen.sv" \
+    "$ROOT/rtl/common_verification/src/sim_timeout.sv" \
+    "$ROOT/rtl/common_verification/src/stream_watchdog.sv" \
+    "$ROOT/rtl/common_verification/src/signal_highlighter.sv" \
+}]} {return 1}
+
+if {[catch { vlog -incr -sv \
+    -svinputport=compat \
+    "+define+TARGET_IHP13" \
+    "+define+TARGET_NETLIST_YOSYS" \
+    "+define+TARGET_SIMULATION" \
+    "+define+TARGET_VERILATOR" \
+    "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
+    "+define+SIMULATION" \
     "$ROOT/rtl/common_verification/src/rand_id_queue.sv" \
     "$ROOT/rtl/common_verification/src/rand_stream_mst.sv" \
     "$ROOT/rtl/common_verification/src/rand_synch_holdable_driver.sv" \
@@ -651,5 +666,6 @@ if {[catch { vlog -incr -sv \
     "$ROOT/rtl/test/tb_croc_soc.sv" \
     "$ROOT/rtl/test/tb_hyperbus_croc_soc.sv" \
     "$ROOT/rtl/models/s27ks0641/s27ks0641.v" \
+    "$ROOT/rtl/riscv-dbg/tb/jtag_test_simple.sv" \
 }]} {return 1}
 

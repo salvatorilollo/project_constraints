@@ -87,6 +87,10 @@ module user_domain import user_pkg::*; import croc_pkg::*; #(
      interrupts_o[0] = neopixel_fifo_interrupt;
   end
 
+  //OBI cut signals
+  sbr_obi_req_t user_sbr_obi_req_cut;
+  sbr_obi_rsp_t user_sbr_obi_rsp_cut;
+
 
   //////////////////////
   // User Manager MUX //
@@ -180,7 +184,7 @@ module user_domain import user_pkg::*; import croc_pkg::*; #(
     .rule_t    ( addr_map_rule_t                ),
     .Napot     ( 1'b0                           )
   ) i_addr_decode_periphs (
-    .addr_i           ( user_sbr_obi_req_i.a.addr ),
+    .addr_i           ( user_sbr_obi_req_cut.a.addr ),
     .addr_map_i       ( user_addr_map             ),
     .idx_o            ( user_idx                  ),
     .dec_valid_o      ( ),
@@ -200,8 +204,8 @@ module user_domain import user_pkg::*; import croc_pkg::*; #(
     .rst_ni,
 
     .sbr_port_select_i ( user_idx             ),
-    .sbr_port_req_i    ( user_sbr_obi_req_i   ),
-    .sbr_port_rsp_o    ( user_sbr_obi_rsp_o   ),
+    .sbr_port_req_i    ( user_sbr_obi_req_cut   ),
+    .sbr_port_rsp_o    ( user_sbr_obi_rsp_cut   ),
 
     .mgr_ports_req_o   ( all_user_sbr_obi_req ),
     .mgr_ports_rsp_i   ( all_user_sbr_obi_rsp )
@@ -212,7 +216,23 @@ module user_domain import user_pkg::*; import croc_pkg::*; #(
 // User Subordinates
 //-------------------------------------------------------------------------------------------------
 
+  //OBI CUT module to cut longest path
 
+ obi_cut #(
+  .ObiCfg       ( SbrObiCfg        ),
+  .obi_a_chan_t ( sbr_obi_a_chan_t ),   // type of req.a  — verify name in croc_pkg
+  .obi_r_chan_t ( sbr_obi_r_chan_t ),   // type of rsp.r  — verify name in croc_pkg
+  .obi_req_t    ( sbr_obi_req_t    ),
+  .obi_rsp_t    ( sbr_obi_rsp_t    ),
+  .Bypass       ( 1'b0             )
+) i_user_sbr_cut (
+  .clk_i,
+  .rst_ni,
+  .sbr_port_req_i ( user_sbr_obi_req_i   ),  // from croc
+  .sbr_port_rsp_o ( user_sbr_obi_rsp_o   ),  // to croc
+  .mgr_port_req_o ( user_sbr_obi_req_cut ),  // into your decode/demux
+  .mgr_port_rsp_i ( user_sbr_obi_rsp_cut )   // from your demux
+);
   // -------------------------------------------------------------------------
   // OBI → AXI bridge for HyperRAM data
   // -------------------------------------------------------------------------

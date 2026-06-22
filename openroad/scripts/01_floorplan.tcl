@@ -28,6 +28,8 @@
 ###############################################################################
 source scripts/startup.tcl
 
+source scripts/place_macrocell.tcl
+
 utl::report "###############################################################################"
 utl::report "# Stage 01: FLOORPLAN"
 utl::report "###############################################################################"
@@ -157,6 +159,27 @@ utl::report "SRAM bank1 bbox: ($bank1X, $bankY) - ([expr {$bank1X + $RamSize512x
 utl::report "SRAM horizontal gaps to core boundary: left [expr {$bank0X - $core_leftX}] between [expr {$bank1X - ($bank0X + $RamSize512x32_W)}] right [expr {$core_rightX - ($bank1X + $RamSize512x32_W)}]"
 utl::report "SRAM vertical gap to core boundary: top [expr {$core_topY - ($bankY + $RamSize512x32_H)}]"
 utl::report "SRAM row-cut halo: x $sramHaloX y $sramHaloY"
+
+utl::report "###############################################################################"
+utl::report "# 01-04b: Manual Delay-Line Placement (before PDN)"
+utl::report "###############################################################################"
+
+
+set delayInstRx "i_croc_soc/i_user/i_hyperbus/i_backend/i_phy/genblk1.i_phy/i_trx/i_delay_rx_rwds_90"
+set delayInstTx "i_croc_soc/i_user/i_hyperbus/i_tx_clk_delay/i_delay_tx_clk_90"
+
+set blk    [ord::get_db_block]
+set delayH [ord::dbu_to_microns [[[$blk findInst $delayInstRx] getMaster] getHeight]]
+
+set delayX 1386.0
+set rxY    1150.0
+set gap    15.0
+set txY    [expr {$rxY + $delayH + $gap}]
+
+place_macrocell $delayInstRx $delayX $rxY R0 FIRM
+place_macrocell $delayInstTx $delayX $txY R0 FIRM
+
+report_image "01-04b_${proj_name}.delayline_placed" true
 
 # defined in init_tech.tcl
 insertTapCells

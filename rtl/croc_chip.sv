@@ -58,6 +58,10 @@ module croc_chip import croc_pkg::*; #() (
 
   output wire neopixel_data_o,
 
+  output wire unused0_o,
+  output wire unused1_o,
+  output wire unused2_o,
+
 
 
   inout wire VDD,
@@ -150,6 +154,10 @@ module croc_chip import croc_pkg::*; #() (
     sg13cmos5l_IOPadInOut30mA pad_hyper_dq_7_io   (.pad(hyper_dq_7_io), .c2p(soc_hyper_dq_o[7]), .p2c(soc_hyper_dq_i[7]),  .c2p_en(soc_hyper_dq_oe_o));
 
     sg13cmos5l_IOPadOut30mA   pad_neopixel_data_o     (.pad(neopixel_data_o),     .c2p(soc_neopixel_data_o));
+
+    sg13cmos5l_IOPadOut16mA   pad_unused0_o    (.pad(unused0_o), .c2p(soc_status_o));
+    sg13cmos5l_IOPadOut16mA   pad_unused1_o    (.pad(unused1_o), .c2p(soc_status_o));
+    sg13cmos5l_IOPadOut16mA   pad_unused2_o    (.pad(unused2_o), .c2p(soc_status_o));
 
     (* dont_touch = "true" *)sg13cmos5l_IOPadVdd pad_vdd0();
     (* dont_touch = "true" *)sg13cmos5l_IOPadVdd pad_vdd1();
