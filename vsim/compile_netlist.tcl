@@ -3,27 +3,13 @@ set ROOT ".."
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
-    "+define+SIMULATION" \
-    "$ROOT/rtl/common_verification/src/clk_rst_gen.sv" \
-    "$ROOT/rtl/common_verification/src/sim_timeout.sv" \
-    "$ROOT/rtl/common_verification/src/stream_watchdog.sv" \
-    "$ROOT/rtl/common_verification/src/signal_highlighter.sv" \
-}]} {return 1}
-
-if {[catch { vlog -incr -sv \
-    -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
-    "+define+TARGET_IHP13" \
-    "+define+TARGET_NETLIST_YOSYS" \
-    "+define+TARGET_SIMULATION" \
-    "+define+TARGET_VERILATOR" \
-    "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "$ROOT/rtl/common_verification/src/clk_rst_gen.sv" \
     "$ROOT/rtl/common_verification/src/sim_timeout.sv" \
@@ -36,6 +22,7 @@ if {[catch { vlog -incr -sv \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
     "+define+SYNTHESIS" \
@@ -50,12 +37,26 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
+    "+define+SIMULATION" \
+    "$ROOT/rtl/common_verification/test/tb_clk_rst_gen.sv" \
+}]} {return 1}
+
+if {[catch { vlog -incr -sv \
+    -svinputport=compat \
+    "+define+TARGET_IHP13" \
+    "+define+TARGET_NETLIST_YOSYS" \
+    "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
+    "+define+TARGET_VERILATOR" \
+    "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "$ROOT/rtl/tech_cells_generic/tc_sram.sv" \
     "$ROOT/rtl/tech_cells_generic/tc_sram_impl.sv" \
@@ -63,24 +64,26 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "$ROOT/rtl/tech_cells_generic/tc_clk.sv" \
 }]} {return 1}
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/common_cells/binary_to_gray.sv" \
@@ -88,12 +91,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/common_cells/cb_filter_pkg.sv" \
@@ -152,12 +156,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/common_cells/cb_filter.sv" \
@@ -194,12 +199,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/apb/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -208,12 +214,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -280,12 +287,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -297,12 +305,52 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
+    "+define+SIMULATION" \
+    "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
+    "+incdir+$ROOT/rtl/common_cells/include" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_dw_pkg.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_xbar_pkg.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_addr_test.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_atop_filter.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_bus_compare.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_cdc.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_delayer.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_dw_downsizer.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_dw_upsizer.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_fifo.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_isolate.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_lite_dw_converter.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_lite_mailbox.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_lite_regs.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_iw_converter.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_lite_to_apb.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_lite_to_axi.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_lite_xbar.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_modify_address.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_serializer.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_sim_mem.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_slave_compare.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_to_axi_lite.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_to_mem_banked.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/test/tb_axi_xbar.sv" \
+}]} {return 1}
+
+if {[catch { vlog -incr -sv \
+    -svinputport=compat \
+    "+define+TARGET_IHP13" \
+    "+define+TARGET_NETLIST_YOSYS" \
+    "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
+    "+define+TARGET_VERILATOR" \
+    "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/obi/include" \
@@ -322,12 +370,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
@@ -359,12 +408,30 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
+    "+define+SIMULATION" \
+    "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
+    "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
+    "+incdir+$ROOT/rtl/apb/include" \
+    "+incdir+$ROOT/rtl/common_cells/include" \
+    "$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/src/reg_test.sv" \
+}]} {return 1}
+
+if {[catch { vlog -incr -sv \
+    -svinputport=compat \
+    "+define+TARGET_IHP13" \
+    "+define+TARGET_NETLIST_YOSYS" \
+    "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
+    "+define+TARGET_VERILATOR" \
+    "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -376,12 +443,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/cve2/include" \
@@ -410,12 +478,63 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+RVFI=true" \
+    "+define+SYNTHESIS" \
+    "+define+SIMULATION" \
+    "+incdir+$ROOT/rtl/common_cells/include" \
+    "+incdir+$ROOT/rtl/cve2/include" \
+    "$ROOT/rtl/cve2/cve2_tracer_pkg.sv" \
+    "$ROOT/rtl/cve2/cve2_tracer.sv" \
+    "$ROOT/rtl/cve2/cve2_core_tracing.sv" \
+}]} {return 1}
+
+if {[catch { vlog -incr -sv \
+    -svinputport=compat \
+    "+define+TARGET_IHP13" \
+    "+define+TARGET_NETLIST_YOSYS" \
+    "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
+    "+define+TARGET_VERILATOR" \
+    "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
+    "+define+SIMULATION" \
+    "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
+    "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
+    "+incdir+$ROOT/rtl/common_cells/include" \
+    "$ROOT/.bender/git/checkouts/hyperbus-d20b59e5a581ace5/models/configurable_delay.behav.sv" \
+}]} {return 1}
+
+if {[catch { vlog -incr -sv \
+    -svinputport=compat \
+    "+define+TARGET_IHP13" \
+    "+define+TARGET_NETLIST_YOSYS" \
+    "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
+    "+define+TARGET_VERILATOR" \
+    "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
+    "+define+SIMULATION" \
+    "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
+    "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
+    "+incdir+$ROOT/rtl/common_cells/include" \
+    "$ROOT/.bender/git/checkouts/hyperbus-d20b59e5a581ace5/src/hyperbus_delay.sv" \
+}]} {return 1}
+
+if {[catch { vlog -incr -sv \
+    -svinputport=compat \
+    "+define+TARGET_IHP13" \
+    "+define+TARGET_NETLIST_YOSYS" \
+    "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
+    "+define+TARGET_VERILATOR" \
+    "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
@@ -443,12 +562,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/idma/include" \
@@ -474,12 +594,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/obi/include" \
@@ -495,12 +616,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/dm_pkg.sv" \
@@ -513,12 +635,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/dmi_jtag_tap.sv" \
@@ -526,12 +649,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/dm_sba.sv" \
@@ -542,12 +666,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/dmi_test.sv" \
@@ -556,12 +681,27 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
+    "+define+SIMULATION" \
+    "+incdir+$ROOT/rtl/common_cells/include" \
+    "$ROOT/rtl/riscv-dbg/dmi_intf.sv" \
+}]} {return 1}
+
+if {[catch { vlog -incr -sv \
+    -svinputport=compat \
+    "+define+TARGET_IHP13" \
+    "+define+TARGET_NETLIST_YOSYS" \
+    "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
+    "+define+TARGET_VERILATOR" \
+    "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/tb/jtag_test_simple.sv" \
@@ -569,12 +709,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
@@ -588,12 +729,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
@@ -612,12 +754,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
@@ -630,12 +773,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
@@ -648,12 +792,13 @@ if {[catch { vlog -incr -sv \
 
 if {[catch { vlog -incr -sv \
     -svinputport=compat \
-    "+define+TARGET_HYPERBUS_EXCLUDE_DLINE" \
     "+define+TARGET_IHP13" \
     "+define+TARGET_NETLIST_YOSYS" \
     "+define+TARGET_SIMULATION" \
+    "+define+TARGET_TEST" \
     "+define+TARGET_VERILATOR" \
     "+define+TARGET_VSIM" \
+    "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \

@@ -21,7 +21,7 @@ set -u  # Error on undefined vars
 # Source environment
 source "../env.sh"
 
-VSIM=${VSIM:-questa-2019.3 vsim}
+VSIM=${VSIM:-questa-2022.3 vsim}
 
 mkdir -p reports
 
@@ -40,9 +40,9 @@ Options:
     --help, -h          Show this help message
     --dry-run, -n       Only print commands instead of executing
     --verbose, -v       Print commands while executing
-    --flist             Regenerate compile script reading sources (compile_rtl.tcl, compile_netlist.tcl)
     --build             Compile Croc RTL in VSIM
     --build-netlist     Compile Croc post-synthesis netlist in VSIM
+    --flist             Generate lists
     --run BINARY        Run binary in VSIM
     --run-gui BINARY    Prepare running binary in VSIM, open GUI
 
@@ -61,47 +61,6 @@ run_cmd() {
     else
         eval $1
     fi
-}
-
-
-generate_rtl_flist() {
-    run_cmd "echo [INFO][Bender] Generate compile_rtl.tcl"
-    run_cmd "bender \
-        script vsim \
-        -t rtl \
-        -t vsim \
-        -t simulation \
-        -t verilator \
-        -t hyperbus_exclude_dline \
-        -DSIMULATION \
-        --vlog-arg="-svinputport=compat"
-        > compile_rtl.tcl"
-
-    run_cmd "echo [INFO][Bender] Remove absolute paths"
-    run_cmd "sed -i 's|${CROC_ROOT}|..|g' compile_rtl.tcl"
-
-    run_cmd "echo [INFO][Bender] File list generated: compile_rtl.tcl"
-}
-
-
-generate_netlist_flist() {
-    run_cmd "echo [INFO][Bender] Generate compile_netlist.tcl"
-    run_cmd "bender \
-        script vsim \
-        -t ihp13 \
-        -t vsim \
-        -t simulation \
-        -t verilator \
-        -t netlist_yosys \
-        -t hyperbus_exclude_dline \
-        -DSIMULATION \
-        --vlog-arg="-svinputport=compat"
-        > compile_netlist.tcl"
-
-    run_cmd "echo [INFO][Bender] Remove absolute paths"
-    run_cmd "sed -i 's|${CROC_ROOT}|..|g' compile_netlist.tcl"
-
-    run_cmd "echo [INFO][Bender] File list generated: compile_netlist.tcl"
 }
 
 
@@ -137,7 +96,7 @@ compile_netlist() {
     run_cmd "echo [INFO][VSIM] Compile post-synthesis netlist"
     run_cmd "${VSIM} \
         -c \
-        -do \"source compile_netlist.tcl; source compile_tech.tcl; exit\" \
+        -do \"source compile_netlist.tcl; exit\" \
         > reports/compile_netlist.log"
 
     # Collect errors and warnings from compilation log and print summary
@@ -160,12 +119,53 @@ compile_netlist() {
     run_cmd "echo \"#######################################################\""
 }
 
+generate_rtl_flist() {
+    run_cmd "echo [INFO][Bender] Generate compile_rtl.tcl"
+    run_cmd "bender \
+        script vsim \
+        -t rtl \
+        -t vsim \
+        -t simulation \
+        -t verilator \
+        -t test \
+        -DSYNTHESIS \
+        -DSIMULATION \
+        --vlog-arg="-svinputport=compat"
+        > compile_rtl.tcl"
+
+    run_cmd "echo [INFO][Bender] Remove absolute paths"
+    run_cmd "sed -i 's|${CROC_ROOT}|..|g' compile_rtl.tcl"
+
+    run_cmd "echo [INFO][Bender] File list generated: compile_rtl.tcl"
+}
+
+
+generate_netlist_flist() {
+    run_cmd "echo [INFO][Bender] Generate compile_netlist.tcl"
+    run_cmd "bender \
+        script vsim \
+        -t ihp13 \
+        -t vsim \
+        -t simulation \
+        -t verilator \
+        -t test \
+        -t netlist_yosys \
+        -DSYNTHESIS \
+        -DSIMULATION \
+        --vlog-arg="-svinputport=compat"
+        > compile_netlist.tcl"
+
+    run_cmd "echo [INFO][Bender] Remove absolute paths"
+    run_cmd "sed -i 's|${CROC_ROOT}|..|g' compile_netlist.tcl"
+
+    run_cmd "echo [INFO][Bender] File list generated: compile_netlist.tcl"
+}
 
 run_vsim() {
     run_cmd "${VSIM} \
         +binary=$1 \
-        -c \
-        tb_croc_soc \
+        -c -voptargs="+acc=npr"\
+        tb_hyperbus_croc_soc \
         -t 1ns \
         -suppress vsim-3009 \
         -suppress vsim-8683 \
@@ -177,8 +177,8 @@ run_vsim() {
 run_vsim_gui() {
     run_cmd "${VSIM} \
         +binary=$1 \
-        -gui \
-        tb_croc_soc \
+        -gui -voptargs="+acc=npr"\
+        tb_hyperbus_croc_soc \
         -t 1ns \
         -voptargs=+acc \
         -suppress vsim-3009 \

@@ -99,6 +99,7 @@
 ../rtl/common_cells/mem_to_banks.sv
 ../rtl/apb/apb_pkg.sv
 ../.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_pkg.sv
+../.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_demux_id_counters.sv
 ../.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_intf.sv
 ../.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_atop_filter.sv
 ../.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_burst_splitter_gran.sv
