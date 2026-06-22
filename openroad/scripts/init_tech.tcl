@@ -32,8 +32,8 @@ read_liberty -corner tt ${pdk_io_lib}/sg13cmos5l_io_typ_1p2V_3p3V_25C.lib
 read_liberty -corner ff ${pdk_io_lib}/sg13cmos5l_io_fast_1p32V_3p6V_m40C.lib
 
 #Hyperbus delay line
-read_liberty -corner tt src/hyperbus_delay.lib
-read_liberty -corner ff src/hyperbus_delay.lib
+read_liberty -corner tt src/hyperbus_delay_welltap.lib
+read_liberty -corner ff src/hyperbus_delay_welltap.lib
 
 puts "Init SRAM macros"
 foreach file [glob -directory $pdk_sram_lib RM_IHPSG13*_typ_1p20V_25C.lib] {
@@ -53,7 +53,7 @@ read_lef ${pdk_io_lef}/sg13cmos5l_io.lef
 read_lef ${pdk_pad_lef}/bondpad5l_70x70.lef
 
 puts "Hyperbus delay line lef"
-read_lef src/hyperbus_delay.abst.lef
+read_lef src/hyperbus_delay_welltap.abst.lef
 
 foreach file [glob -directory $pdk_sram_lef RM_IHPSG13*.lef] {
 	read_lef "$file"
