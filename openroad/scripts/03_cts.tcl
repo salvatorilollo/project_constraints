@@ -34,6 +34,8 @@ load_checkpoint 02_${proj_name}.placed
 setDefaultParasitics
 set_dont_use $dont_use_cells
 
+report_clock_properties
+
 
 utl::report "###############################################################################"
 utl::report "# Stage 03: CLOCK TREE SYNTHESIS"

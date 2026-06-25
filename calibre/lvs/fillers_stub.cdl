@@ -1,0 +1,49 @@
+************************************************************************
+* Local EZ 8-track filler CDL stubs
+*
+* The EZ LEF/GDS contains these physical spacer cells with VDD/VSS rail
+* pins, but the upstream EZ CDL does not define them. They are intentionally
+* device-empty so Calibre can keep filler instances in the LVS source netlist
+* while comparing no active devices for them.
+************************************************************************
+
+.SUBCKT FILLER1 VDD VSS
+*.PININFO VDD:B VSS:B
+.ENDS
+
+.SUBCKT FILLER2 VDD VSS
+*.PININFO VDD:B VSS:B
+.ENDS
+
+.SUBCKT FILLER4 VDD VSS
+*.PININFO VDD:B VSS:B
+.ENDS
+
+.SUBCKT FILLER8 VDD VSS
+*.PININFO VDD:B VSS:B
+.ENDS
+
+.SUBCKT FILLER16 VDD VSS
+*.PININFO VDD:B VSS:B
+.ENDS
+
+* Compatibility aliases for flows that add an X before the drive/width suffix.
+.SUBCKT FILLERX1 VDD VSS
+*.PININFO VDD:B VSS:B
+.ENDS
+
+.SUBCKT FILLERX2 VDD VSS
+*.PININFO VDD:B VSS:B
+.ENDS
+
+.SUBCKT FILLERX4 VDD VSS
+*.PININFO VDD:B VSS:B
+.ENDS
+
+.SUBCKT FILLERX8 VDD VSS
+*.PININFO VDD:B VSS:B
+.ENDS
+
+.SUBCKT FILLERX16 VDD VSS
+*.PININFO VDD:B VSS:B
+.ENDS

@@ -215,6 +215,7 @@ if {[catch { vlog -incr -sv \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_pkg.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_demux_id_counters.sv" \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_intf.sv" \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_atop_filter.sv" \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_burst_splitter_gran.sv" \
@@ -771,6 +772,7 @@ if {[catch { vlog -incr -sv \
     "$ROOT/rtl/test/tb_croc_pkg.sv" \
     "$ROOT/rtl/test/croc_vip.sv" \
     "$ROOT/rtl/test/tb_croc_soc.sv" \
+    "$ROOT/rtl/test/neopixel_monitor.sv" \
     "$ROOT/rtl/test/tb_hyperbus_croc_soc.sv" \
     "$ROOT/rtl/models/s27ks0641/s27ks0641.v" \
     "$ROOT/rtl/riscv-dbg/tb/jtag_test_simple.sv" \

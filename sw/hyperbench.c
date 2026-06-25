@@ -36,7 +36,6 @@ int main(void) {
   printf("write cyc=0x%x\n", (unsigned)wcyc);
   printf("read  cyc=0x%x\n", (unsigned)rcyc);
   printf("sum=0x%x\n", (unsigned)sum);
-  printf("exp=0xA5007F80\n");
 
   return 0;
 }

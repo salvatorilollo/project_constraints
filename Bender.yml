@@ -20,8 +20,8 @@ dependencies:
   cve2:                 { path: "rtl/cve2" } # a vendor package (no Bender.yml), see below 
   register_interface:   { git: "https://github.com/pulp-platform/register_interface.git",   version: 0.4.1  }
   axi:                  { git: "https://github.com/pulp-platform/axi.git",                version: 0.39.2 }
-  #hyperbus:             { git: "https://github.com/pulp-platform/hyperbus.git",              rev: "391a4ebcddc6643ddbf9ac3a35bf171d4cb8a986" } # Synchronous version vanilla
-  hyperbus:             { git: "https://github.com/pulp-platform/hyperbus.git",              rev: "b11cc59e399f7aa38c02b00e961a6b8e87c41020" } # Synchronous version clock stop
+  hyperbus:             { git: "https://github.com/pulp-platform/hyperbus.git",              rev: "391a4ebcddc6643ddbf9ac3a35bf171d4cb8a986" } # Synchronous version vanilla
+  #hyperbus:             { git: "https://github.com/pulp-platform/hyperbus.git",              rev: "4ed5ab191454188a479a8f766c0ad788f1b61660" } # Synchronous version clock stop
   axi_obi:              { git: "https://github.com/pulp-platform/axi_obi.git",             rev: "84f21a6524bedcf17a569a62ac01b8a5610819c8" }
 
 
@@ -85,6 +85,7 @@ sources:
       - rtl/test/tb_croc_pkg.sv
       - rtl/test/croc_vip.sv
       - rtl/test/tb_croc_soc.sv
+      - rtl/test/neopixel_monitor.sv
       - rtl/test/tb_hyperbus_croc_soc.sv
       - rtl/models/s27ks0641/s27ks0641.v
       - rtl/riscv-dbg/tb/jtag_test_simple.sv

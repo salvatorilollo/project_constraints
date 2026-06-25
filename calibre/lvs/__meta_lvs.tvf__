@@ -1,0 +1,31 @@
+#!tvf
+
+## +++ TVF CUSTOMIZATION SETTINGS START +++ 
+
+set ngComp 1
+tvf::set_global_variable ngComp 1
+set globPort {NO}
+tvf::set_global_variable globPort {NO}
+
+## +++ TVF CUSTOMIZATION SETTINGS END +++ 
+
+tvf::VERBATIM {
+DRC ICSTATION YES
+
+// +++ CUSTOMIZATION SETTINGS START +++ 
+
+
+// +++ CUSTOMIZATION SETTINGS END +++ 
+
+}
+
+
+tvf::VERBATIM {
+INCLUDE "/usr/pack/ihp-sg13-kgf/dz/calibre/ihpsg13g2/RM_addons.lvs4calibre.dz"
+}
+
+tvf::VERBATIM {
+INCLUDE "/usr/pack/ihp-sg13-kgf/open_ihp_sg13g2/sg13g2_io/v0.2/cdl/short_ptap1.dz"
+}
+
+source "/usr/pack/ihp-sg13-kgf/open_ihp_sg13cmos5l/sg13cmos5l_tech/v0.2/Calibre/RSF/lvs.tvf"

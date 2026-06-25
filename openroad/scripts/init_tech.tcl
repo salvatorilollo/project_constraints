@@ -63,6 +63,7 @@ foreach file [glob -directory $pdk_sram_lef RM_IHPSG13*.lef] {
 proc setDefaultParasitics {} {
 	set_wire_rc -clock -layer Metal3
 	set_wire_rc -signal -layer Metal3
+	set_placement_padding -masters {DFFRQ*} -left 0 -right 1
 }
 
 # Tie cell pins

@@ -61,8 +61,12 @@ write_sdc                      ${out_dir}/${proj_name}.sdc
 #define_process_corner -ext_model_index 0 X
 #extract_parasitics -ext_model_file IHP_rcx_patterns.rules
 #write_spef ${out_dir}/${proj_name}.spef
-#read_spef  ${out_dir}/${proj_name}.spef; # readback parasitics for OpenSTA
-#report_metrics "${step_nr}_${proj_name}.extract"
+
+
+read_spef  ${out_dir}/${proj_name}_tt.spef; # readback parasitics for OpenSTA
+read_spef  ${out_dir}/${proj_name}_ff.spef; # readback parasitics for OpenSTA
+
+report_metrics "05_${proj_name}.final"
 
 utl::report "###############################################################################"
 utl::report "# Stage 05 complete: Final outputs written to ${out_dir}/"

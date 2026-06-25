@@ -42,6 +42,7 @@
 // ---------------- memory map --------------
 #define HYP_RAM_BASE 0x30000000u
 static volatile uint32_t * const hyperram = (volatile uint32_t *)HYP_RAM_BASE;
+#define FENCE() __asm__ volatile("fence rw,rw" ::: "memory")
 
 // The ONLY on-chip copy: one frame. The full NUM_FRAMES sequence lives in HyperRAM.
 static uint32_t line[NUM_PIXELS];
@@ -98,6 +99,8 @@ static void neopixel_send_frame(uint32_t *pixels) {
     *reg32(NPX_BASE_ADDR, NPX_FIFO_REG_OFFSET) = NPX_FIFO_REG_MODE_FIFO;
     for (int i = 0; i < NUM_PIXELS; i++)
         *reg32(NPX_BASE_ADDR, NPX_FIFO_DATA_REG_OFFSET) = pixels[i];
+
+    while (*reg32(NPX_BASE_ADDR, NPX_FIFO_DATA_REG_OFFSET) != 0); //drain before flush                                                    // drain before flush
     *reg32(NPX_BASE_ADDR, NPX_FIFO_REG_OFFSET) = NPX_FIFO_REG_DEACTIVATED;
 }
 
@@ -110,14 +113,19 @@ static inline uint32_t read_mcycle(void) {
 // Generate the whole animation into HyperRAM. Each frame is 64 contiguous words,
 // so this is exactly the contiguous-write workload your coalescing accelerates.
 static void generate_to_hyperram(void) {
+    FENCE();
     for (int f = 0; f < NUM_FRAMES; f++) {
         render_frame(line, f);
-        uint32_t base = (uint32_t)f * NUM_PIXELS;    // *64 -> shift, no hw multiply
+        uint32_t base = (uint32_t)f * NUM_PIXELS;
         for (int i = 0; i < NUM_PIXELS; i++)
             hyperram[base + i] = line[i];
     }
-    // force the last coalesced write to drain before we stop the timer
-    (void)hyperram[(uint32_t)(NUM_FRAMES - 1) * NUM_PIXELS];
+    // read back one word per frame so every frame's burst is flushed, not just the last
+    volatile uint32_t drain = 0;
+    for (int f = 0; f < NUM_FRAMES; f++)
+        drain += hyperram[(uint32_t)f * NUM_PIXELS];
+    (void)drain;
+    FENCE();
 }
 
 // Stream each frame from HyperRAM through the one-frame SRAM buffer to the matrix.

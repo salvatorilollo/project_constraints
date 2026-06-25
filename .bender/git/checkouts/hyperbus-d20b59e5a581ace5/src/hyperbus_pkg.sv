@@ -47,7 +47,6 @@ package hyperbus_pkg;
         WaitAddLatAccess,
         Read,
         Write,
-        ClockStop,
         WaitXfer,
         WaitRWR
     } hyper_phy_state_t;

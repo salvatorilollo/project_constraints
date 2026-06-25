@@ -19,7 +19,7 @@ klayout -zz -rd design_name=${topcell} \
                        ../technology/gds/sg13cmos5l_io.gds \
                        ../technology/gds/bondpad5l_70x70.gds \
                        ../technology/gds/RM_IHPSG13_1P_512x32_c2_bm_bist.gds \
-                       ../technology/gds/hyperbus_delay_welltap.gds" \
+                       ../hyperbus_delay_welltap/hyperbus_delay_welltap.gds" \
         -rd out_file=${outfile} \
         -rd tech_file=./.klayout/tech/${technology}.lyt \
         -rd layer_map='' \

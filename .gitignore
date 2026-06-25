@@ -8,7 +8,6 @@
 # cockpit root
 /.llamaconfig
 /tmp
-/calibre
 /docs
 /technology
 /.setPDK.csh

@@ -1,0 +1,81 @@
+#!tvf
+
+## +++ TVF CUSTOMIZATION SETTINGS START +++ 
+
+set ngComp 1
+tvf::set_global_variable ngComp 1
+set globPort {NO}
+tvf::set_global_variable globPort {NO}
+
+## +++ TVF CUSTOMIZATION SETTINGS END +++ 
+
+tvf::VERBATIM {
+//
+//  Rule file generated on Thu Jun 25 16:07:44 CEST 2026
+//     by Calibre Interactive - LVS (v2021.3_35.19)
+//
+//      *** PLEASE DO NOT MODIFY THIS FILE ***
+//
+//
+
+
+// +++ CUSTOMIZATION SETTINGS START +++ 
+
+
+// +++ CUSTOMIZATION SETTINGS END +++ 
+
+LAYOUT PATH  "/scratch/vlsi2_24fs26/project_constraints/klayout/out/croc.gds"
+LAYOUT PRIMARY "croc_chip"
+LAYOUT SYSTEM GDSII
+
+SOURCE PATH "/scratch/vlsi2_24fs26/project_constraints/calibre/lvs/croc_chip.spi"
+SOURCE PRIMARY "croc_chip"
+SOURCE SYSTEM SPICE
+
+MASK SVDB DIRECTORY "/scratch/vlsi2_24fs26/tmp/svdb" QUERY
+
+LVS REPORT "croc_chip.lvs.report"
+
+LVS REPORT OPTION E
+LVS FILTER UNUSED OPTION NONE SOURCE
+LVS FILTER UNUSED OPTION NONE LAYOUT
+LVS REPORT MAXIMUM 50
+
+LVS RECOGNIZE GATES ALL
+
+
+LVS ABORT ON SOFTCHK NO
+LVS ABORT ON SUPPLY ERROR YES
+LVS IGNORE PORTS NO
+LVS SHOW SEED PROMOTIONS NO
+LVS SHOW SEED PROMOTIONS MAXIMUM 50
+
+LVS ISOLATE SHORTS NO
+
+
+VIRTUAL CONNECT COLON NO
+VIRTUAL CONNECT REPORT NO
+
+LVS EXECUTE ERC YES
+ERC RESULTS DATABASE "croc_chip.erc.results"
+ERC SUMMARY REPORT "croc_chip.erc.summary" REPLACE HIER
+ERC CELL NAME YES CELL SPACE XFORM
+ERC MAXIMUM RESULTS 1000
+ERC MAXIMUM VERTEX 4096
+
+DRC ICSTATION YES
+
+}
+
+
+tvf::VERBATIM {
+INCLUDE "/usr/pack/ihp-sg13-kgf/dz/calibre/ihpsg13g2/RM_addons.lvs4calibre.dz"
+}
+
+tvf::VERBATIM {
+INCLUDE "/usr/pack/ihp-sg13-kgf/open_ihp_sg13g2/sg13g2_io/v0.2/cdl/short_ptap1.dz"
+}
+
+
+source "/usr/pack/ihp-sg13-kgf/open_ihp_sg13cmos5l/sg13cmos5l_tech/v0.2/Calibre/RSF/lvs.tvf"
+

@@ -157,6 +157,14 @@ module tb_hyperbus_croc_soc #(
     .neopixel_data_o ( neopixel_data )
   );
 
+neopixel_monitor #(
+  .T_HIGH_THRESH (600.0),    // ns: splits a '0' high-time from a '1' high-time
+  .T_HIGH_MAX    (2000.0),   // ns: above this = illegal pulse warning
+  .T_LATCH       (10000.0)   // ns: idle gap that marks end-of-frame
+) i_npx_mon (
+  .npx_d (neopixel_data)     // the signal your DUT already drives
+);
+
   // --------------------------------------------------------------------------
   // HyperRAM model: Cypress/Infineon S27KS0641 (8 MB)
   // - Bidirectional pins (DQ, RWDS) connect to the pin-level signals
@@ -183,6 +191,7 @@ module tb_hyperbus_croc_soc #(
   );
   
   initial $sdf_annotate("../rtl/models/s27ks0641/s27ks0641.sdf", i_hyperram);
+
 
 
   // --------------------------------------------------------------------------

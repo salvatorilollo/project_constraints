@@ -65,6 +65,9 @@ yosys setattr -set keep_hierarchy 1 "t:hyperbus_tx_clk_delay$*"
 yosys setattr -set keep_hierarchy 1 "t:hyperbus_delay$*"
 yosys setattr -set keep_hierarchy 1 "t:hyperbus_clock_diff_out$*"
 yosys setattr -set keep_hierarchy 1 "t:hyperbus_ddr_out$*"
+# Replace the abstract HyperBus delay wrapper with the physical macro that OpenROAD has LEF/lib views for
+yosys chtype -map hyperbus_delay hyperbus_delay_welltap
+yosys setattr -set keep_hierarchy 1 "t:hyperbus_delay_welltap"
 
 
 # blackbox modules (applies the *blackbox* attribute)

@@ -26,6 +26,7 @@ if {[file exists "../technology"]} {
 set tech_cells [list "$pdk_cells_lib/ez130_8t_tt_1p20v_25c.lib"]
 set tech_macros [glob -directory $pdk_sram_lib RM_IHPSG13*_typ_1p20V_25C.lib]
 lappend tech_macros "$pdk_io_lib/sg13cmos5l_io_typ_1p2V_3p3V_25C.lib"
+lappend tech_macros "../hyperbus_delay_welltap/hyperbus_delay_welltap.lib"
 
 # for hilomap
 set tech_cell_tiehi {TIEHI Y}
