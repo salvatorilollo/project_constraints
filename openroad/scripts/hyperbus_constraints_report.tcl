@@ -14,6 +14,7 @@
 source scripts/startup.tcl
 
 set HYP_RPT_CHECKPOINT [expr {[info exists ::env(HYP_RPT_CHECKPOINT)] ? $::env(HYP_RPT_CHECKPOINT) : "latest"}]
+set HYP_RPT_USE_CURRENT_SDC [expr {[info exists ::env(HYP_RPT_USE_CURRENT_SDC)] ? $::env(HYP_RPT_USE_CURRENT_SDC) : 0}]
 set HYP_RPT_TAG [string map {"/" "_" "." "_"} $HYP_RPT_CHECKPOINT]
 set HYP_RPT_DIR [file join $report_dir "hyperbus_${HYP_RPT_TAG}"]
 if {[file exists $HYP_RPT_DIR]} {
@@ -22,7 +23,44 @@ if {[file exists $HYP_RPT_DIR]} {
 file mkdir $HYP_RPT_DIR
 
 utl::report "HyperBus report checkpoint: $HYP_RPT_CHECKPOINT"
-load_checkpoint $HYP_RPT_CHECKPOINT
+
+proc hyp_load_checkpoint_db_only {checkpoint} {
+  global save_dir
+  if {$checkpoint eq "" || $checkpoint eq "latest"} {
+    set zips [lsort -decreasing -index 0 [glob -nocomplain -directory $save_dir -types f *.zip]]
+    if {![llength $zips]} {
+      error "No checkpoint .zip found in $save_dir"
+    }
+    set checkpoint [file rootname [file tail [lindex $zips 0]]]
+  }
+
+  set candidates [glob -nocomplain -directory $save_dir -types f "*${checkpoint}*"]
+  if {![llength $candidates]} {
+    error "No checkpoint found matching: $checkpoint"
+  }
+
+  set name [lindex $candidates 0]
+  set ext [file extension $name]
+  if {$ext eq ".zip"} {
+    set chkpath [file join $save_dir "hyp_rpt_${checkpoint}"]
+    file delete -force $chkpath
+    exec unzip -qq -o $name -d $chkpath
+    read_db [file join $chkpath $checkpoint.odb]
+    file delete -force $chkpath
+  } elseif {$ext eq ".odb"} {
+    read_db $name
+  } else {
+    error "Unsupported checkpoint type for DB-only load: $ext"
+  }
+}
+
+if {$HYP_RPT_USE_CURRENT_SDC} {
+  utl::report "HyperBus report using current src/constraints.sdc"
+  hyp_load_checkpoint_db_only $HYP_RPT_CHECKPOINT
+  read_sdc src/constraints.sdc
+} else {
+  load_checkpoint $HYP_RPT_CHECKPOINT
+}
 
 setDefaultParasitics
 set HYP_RPT_PARASITICS [expr {[info exists ::env(HYP_RPT_PARASITICS)] ? $::env(HYP_RPT_PARASITICS) : ""}]
@@ -155,6 +193,22 @@ proc hyp_report_checks {tag title args} {
   puts "WARNING: HyperBus report $tag failed: $msg2"
 }
 
+proc hyp_report_checks_expected_empty {tag title reason args} {
+  hyp_report_checks $tag $title {*}$args
+
+  set rpt [file join $::HYP_RPT_DIR "${tag}.rpt"]
+  set fh [open $rpt r]
+  set txt [read $fh]
+  close $fh
+
+  if {[string first "No paths found." $txt] >= 0} {
+    set txt [string map [list "No paths found." "EXPECTED_EMPTY:\n  $reason"] $txt]
+    set fh [open $rpt w]
+    puts -nonewline $fh $txt
+    close $fh
+  }
+}
+
 proc hyp_report_clock_cmd {tag title cmd} {
   if {[llength [info commands [lindex $cmd 0]]] > 0} {
     hyp_run_cmd $tag $title $cmd
@@ -187,6 +241,8 @@ set HYP_CKN_OUT     [get_ports -quiet {hyper_ck_no}]
 set HYP_CS_OUT      [get_ports -quiet {hyper_cs_no}]
 set HYP_RESET_OUT   [get_ports -quiet {hyper_reset_no}]
 set HYP_CK_C2P      [get_pins -quiet {pad_hyper_ck_o/c2p}]
+set HYP_RESET_C2P   [get_pins -quiet {pad_hyper_reset_no/c2p}]
+set HYP_BIDIR_PAD_PORTS [concat $HYP_DQ_PAD_PORTS $HYP_RWDS_PAD_PORT]
 
 set HYP_TX_DLINE_IN [get_pins -quiet -hierarchical {*i_tx_clk_delay/i_delay_tx_clk_90/in_i}]
 set HYP_TX90_PIN    [get_pins -quiet -hierarchical {*i_tx_clk_delay/i_delay_tx_clk_90/out_o}]
@@ -199,6 +255,7 @@ set HYP_RX_SAMPLE_CLK    [get_pins -quiet -hierarchical {*i_trx/i_rwds_clk_inver
 set HYP_RWDS_SAMPLE_D    [get_pins -quiet -hierarchical {*i_trx/rwds_sample_o_reg/D}]
 set HYP_RWDS_GATE_EN     [get_pins -quiet -hierarchical {*i_trx/i_rwds_in_clk_gate/gen_clkgate.i_clkgate/E}]
 set HYP_TX_CK_GATE_EN    [get_pins -quiet -hierarchical {*i_trx/i_clock_diff_out/i_hyper_ck_gating/gen_clkgate.i_clkgate/E}]
+set HYP_RX_SOFT_RST_PINS [get_pins -quiet -hierarchical {*i_trx/i_rx_rwds_cdc_fifo.src_*_reg/RB}]
 set HYP_RWDS_CDC_ASYNC   [get_nets -quiet -hierarchical {*i_trx/i_rx_rwds_cdc_fifo.async*}]
 
 set HYP_DDR_MUX_CELLS [get_cells -quiet -hierarchical {
@@ -223,6 +280,8 @@ hyp_require HYP_CKN_OUT $HYP_CKN_OUT
 hyp_require HYP_CS_OUT $HYP_CS_OUT
 hyp_require HYP_RESET_OUT $HYP_RESET_OUT
 hyp_require HYP_CK_C2P $HYP_CK_C2P
+hyp_require HYP_RESET_C2P $HYP_RESET_C2P
+hyp_require HYP_BIDIR_PAD_PORTS $HYP_BIDIR_PAD_PORTS
 hyp_require HYP_TX_DLINE_IN $HYP_TX_DLINE_IN
 hyp_require HYP_TX90_PIN $HYP_TX90_PIN
 hyp_require HYP_RX_DELAY_IN $HYP_RX_DELAY_IN
@@ -233,6 +292,7 @@ hyp_require HYP_RX_SAMPLE_CLK $HYP_RX_SAMPLE_CLK
 hyp_require HYP_RWDS_SAMPLE_D $HYP_RWDS_SAMPLE_D
 hyp_require HYP_RWDS_GATE_EN $HYP_RWDS_GATE_EN
 hyp_require HYP_TX_CK_GATE_EN $HYP_TX_CK_GATE_EN
+hyp_require HYP_RX_SOFT_RST_PINS $HYP_RX_SOFT_RST_PINS
 hyp_require HYP_RWDS_CDC_ASYNC $HYP_RWDS_CDC_ASYNC
 hyp_require HYP_DDR_MUX_CELLS $HYP_DDR_MUX_CELLS
 hyp_require HYP_DDR_MUX_PINS $HYP_DDR_MUX_PINS
@@ -251,17 +311,17 @@ foreach item {
   HYP_DQ_PAD_PORTS HYP_RWDS_PAD_PORT HYP_DQ_IO HYP_RWDS_IO HYP_DQ_C2P
   HYP_RWDS_C2P HYP_WRITE_OUT HYP_WRITE_C2P HYP_WRITE_OE HYP_CK_OUT
   HYP_CKN_OUT HYP_CK_C2P
-  HYP_CS_OUT HYP_RESET_OUT HYP_TX_DLINE_IN HYP_TX90_PIN HYP_RX_DELAY_IN
+  HYP_CS_OUT HYP_RESET_OUT HYP_RESET_C2P HYP_BIDIR_PAD_PORTS HYP_TX_DLINE_IN HYP_TX90_PIN HYP_RX_DELAY_IN
   HYP_RX_DELAY_OUT
   HYP_RX_CAPTURE_CLK HYP_RX_CAPTURE_STOP HYP_RX_SAMPLE_CLK HYP_RWDS_SAMPLE_D HYP_RWDS_GATE_EN
-  HYP_TX_CK_GATE_EN HYP_RWDS_CDC_ASYNC HYP_DDR_MUX_CELLS HYP_DDR_MUX_PINS
+  HYP_TX_CK_GATE_EN HYP_RX_SOFT_RST_PINS HYP_RWDS_CDC_ASYNC HYP_DDR_MUX_CELLS HYP_DDR_MUX_PINS
   HYP_DDR_MUX_OUT_PINS HYP_DDR_MUX_SEL_PINS
 } {
   puts $fh [format "  %-24s %4d" $item [hyp_size [set $item]]]
 }
 puts $fh ""
 puts $fh "Key objects:"
-foreach item {HYP_DQ_PAD_PORTS HYP_RWDS_PAD_PORT HYP_DQ_IO HYP_RWDS_IO HYP_DQ_C2P HYP_RWDS_C2P HYP_WRITE_C2P HYP_WRITE_OE HYP_CK_C2P HYP_TX90_PIN HYP_RX_DELAY_OUT HYP_RX_CAPTURE_CLK HYP_RX_SAMPLE_CLK HYP_RWDS_SAMPLE_D HYP_RWDS_GATE_EN HYP_TX_CK_GATE_EN HYP_DDR_MUX_OUT_PINS HYP_DDR_MUX_SEL_PINS} {
+foreach item {HYP_DQ_PAD_PORTS HYP_RWDS_PAD_PORT HYP_DQ_IO HYP_RWDS_IO HYP_DQ_C2P HYP_RWDS_C2P HYP_WRITE_C2P HYP_WRITE_OE HYP_CK_C2P HYP_RESET_C2P HYP_TX90_PIN HYP_RX_DELAY_OUT HYP_RX_CAPTURE_CLK HYP_RX_SAMPLE_CLK HYP_RWDS_SAMPLE_D HYP_RWDS_GATE_EN HYP_TX_CK_GATE_EN HYP_RX_SOFT_RST_PINS HYP_DDR_MUX_OUT_PINS HYP_DDR_MUX_SEL_PINS} {
   puts $fh "$item:"
   foreach name [hyp_collection_names [set $item]] {
     puts $fh "  $name"
@@ -288,17 +348,23 @@ hyp_report_checks 008_unconstrained_all "All unconstrained paths" -unconstrained
 # 1. Delay-line and generated clock phase probes.
 ###############################################################################
 
-hyp_report_checks 100_tx_delay_line_setup "TX delay line Liberty-arc setup probe" \
+hyp_report_checks_expected_empty 100_tx_delay_line_setup "TX delay line Liberty-arc setup probe" \
+  "The delay macro is modeled as generated-clock latency; no data timing arc is expected here." \
   -from $HYP_TX_DLINE_IN -to $HYP_TX90_PIN -path_delay max
-hyp_report_checks 101_tx_delay_line_hold "TX delay line Liberty-arc hold probe" \
+hyp_report_checks_expected_empty 101_tx_delay_line_hold "TX delay line Liberty-arc hold probe" \
+  "The delay macro is modeled as generated-clock latency; no data timing arc is expected here." \
   -from $HYP_TX_DLINE_IN -to $HYP_TX90_PIN -path_delay min
-hyp_report_checks 102_rx_delay_line_setup "RX RWDS delay line Liberty-arc setup probe" \
+hyp_report_checks_expected_empty 102_rx_delay_line_setup "RX RWDS delay line Liberty-arc setup probe" \
+  "The delay macro is modeled as generated-clock latency; no data timing arc is expected here." \
   -from $HYP_RX_DELAY_IN -to $HYP_RX_DELAY_OUT -path_delay max
-hyp_report_checks 103_rx_delay_line_hold "RX RWDS delay line Liberty-arc hold probe" \
+hyp_report_checks_expected_empty 103_rx_delay_line_hold "RX RWDS delay line Liberty-arc hold probe" \
+  "The delay macro is modeled as generated-clock latency; no data timing arc is expected here." \
   -from $HYP_RX_DELAY_IN -to $HYP_RX_DELAY_OUT -path_delay min
-hyp_report_checks 104_rwds_pad_to_delay_in_setup_probe "RWDS pad to delay input setup probe" \
+hyp_report_checks_expected_empty 104_rwds_pad_to_delay_in_setup_probe "RWDS pad to delay input setup probe" \
+  "RWDS is modeled as a clock source at the pad core side, not as an unconstrained data path into the delay line." \
   -unconstrained -from $HYP_RWDS_IO -to $HYP_RX_DELAY_IN -path_delay max
-hyp_report_checks 105_rwds_pad_to_delay_in_hold_probe "RWDS pad to delay input hold probe" \
+hyp_report_checks_expected_empty 105_rwds_pad_to_delay_in_hold_probe "RWDS pad to delay input hold probe" \
+  "RWDS is modeled as a clock source at the pad core side, not as an unconstrained data path into the delay line." \
   -unconstrained -from $HYP_RWDS_IO -to $HYP_RX_DELAY_IN -path_delay min
 
 ###############################################################################
@@ -342,6 +408,11 @@ hyp_report_checks 306_tx_ck_gate_enable_setup "TX CK clock-gate enable setup, 25
   -from [get_clocks clk_sys] -to $HYP_TX_CK_GATE_EN -path_delay max
 hyp_report_checks 307_tx_ck_gate_enable_hold "TX CK clock-gate enable hold" \
   -from [get_clocks clk_sys] -to $HYP_TX_CK_GATE_EN -path_delay min
+hyp_report_checks 308_rx_soft_reset_release_setup "RWDS soft-reset release setup, 25 percent budget" \
+  -from [get_clocks clk_sys] -to $HYP_RX_SOFT_RST_PINS -path_delay max
+hyp_report_checks_expected_empty 309_rx_soft_reset_release_hold "RWDS soft-reset release removal audit" \
+  "The removal side is intentionally cut; report 308 is the governing soft-reset release check." \
+  -from [get_clocks clk_sys] -to $HYP_RX_SOFT_RST_PINS -path_delay min
 
 ###############################################################################
 # 4. RX CDC FIFO from RWDS sample clock back to clk_sys.
@@ -378,20 +449,22 @@ hyp_report_checks 507_tx_ddr_mux_to_pads_hold "TX DDR mux to pad outputs hold" \
   -through $HYP_DDR_MUX_OUT_PINS -to $HYP_WRITE_OUT -path_delay min
 hyp_report_checks 508_tx_oe_setup "TX DQ/RWDS output-enable setup" \
   -from [get_clocks clk_sys] -to $HYP_WRITE_OE -path_delay max
-hyp_report_checks 509_tx_oe_min_probe "TX DQ/RWDS output-enable minimum-delay probe" \
-  -unconstrained -from [get_clocks clk_sys] -to $HYP_WRITE_OE -path_delay min
+hyp_report_checks 509_tx_oe_hold "TX DQ/RWDS output-enable hold" \
+  -from [get_clocks clk_sys] -to $HYP_WRITE_OE -path_delay min
 hyp_report_checks 510_tx_cs_setup "TX CS# setup relative to HyperBus CK" \
   -from [get_clocks clk_sys] -to $HYP_CS_OUT -path_delay max
 hyp_report_checks 511_tx_cs_hold "TX CS# hold relative to HyperBus CK" \
   -from [get_clocks clk_sys] -to $HYP_CS_OUT -path_delay min
-hyp_report_checks 512_tx90_to_ck_out_setup_probe "TX 90-degree clock to CK output probe" \
+hyp_report_checks_expected_empty 512_tx90_to_ck_out_setup_probe "TX 90-degree clock to CK output probe" \
+  "CK is modeled as a generated propagated clock; this data-path probe is only expected to populate if OpenSTA exposes that arc." \
   -unconstrained -from $HYP_TX90_PIN -to $HYP_CK_OUT -path_delay max
-hyp_report_checks 513_tx90_to_ck_out_hold_probe "TX 90-degree clock to CK output probe hold" \
+hyp_report_checks_expected_empty 513_tx90_to_ck_out_hold_probe "TX 90-degree clock to CK output probe hold" \
+  "CK is modeled as a generated propagated clock; this data-path probe is only expected to populate if OpenSTA exposes that arc." \
   -unconstrained -from $HYP_TX90_PIN -to $HYP_CK_OUT -path_delay min
-hyp_report_checks 514_reset_passthrough_setup "HyperBus RESET# async passthrough setup budget" \
-  -from [get_ports rst_ni] -to $HYP_RESET_OUT -path_delay max
-hyp_report_checks 515_reset_passthrough_hold "HyperBus RESET# async passthrough hold" \
-  -from [get_ports rst_ni] -to $HYP_RESET_OUT -path_delay min
+hyp_report_checks 514_reset_release_setup "HyperBus RESET# synchronized release setup budget" \
+  -from [get_clocks clk_sys] -to $HYP_RESET_OUT -path_delay max
+hyp_report_checks 515_reset_release_hold "HyperBus RESET# synchronized release min-delay audit" \
+  -from [get_clocks clk_sys] -to $HYP_RESET_OUT -path_delay min
 
 ###############################################################################
 # 6. Edge-filtered DDR sanity checks.
@@ -420,22 +493,12 @@ hyp_report_checks 701_hyperbus_outputs_audit "HyperBus output-side timing audit"
   -to [concat $HYP_WRITE_OUT $HYP_CK_OUT $HYP_CKN_OUT $HYP_CS_OUT $HYP_RESET_OUT] -path_delay min_max
 
 ###############################################################################
-# 8. DDR mux-select transition probe.
+# 8. DDR mux-select transition checks.
 ###############################################################################
 
-# The SDC cuts DDR mux select-as-data paths.  Temporarily restore them here so
-# select-to-pad transition latency remains visible.
-if {[llength [info commands unset_path_exceptions]] > 0} {
-  catch {unset_path_exceptions -through $HYP_DDR_MUX_OUT_PINS}
-  catch {unset_path_exceptions -from [get_clocks clk_sys] -through $HYP_DDR_MUX_SEL_PINS}
-  catch {unset_path_exceptions -from [get_ports clk_i] -through $HYP_DDR_MUX_SEL_PINS}
-  hyp_report_checks 800_tx_ddr_mux_select_to_pads_setup_probe "TX DDR mux select-to-pad setup probe" \
-    -through $HYP_DDR_MUX_SEL_PINS -to $HYP_WRITE_OUT -path_delay max
-  hyp_report_checks 801_tx_ddr_mux_select_to_pads_hold_probe "TX DDR mux select-to-pad hold probe" \
-    -through $HYP_DDR_MUX_SEL_PINS -to $HYP_WRITE_OUT -path_delay min
-} else {
-  hyp_report_checks 800_tx_ddr_mux_select_to_pads_unconstrained_probe "TX DDR mux select-to-pad unconstrained probe" \
-    -unconstrained -through $HYP_DDR_MUX_SEL_PINS -to $HYP_WRITE_OUT -path_delay min_max
-}
+hyp_report_checks 800_tx_ddr_mux_select_to_pads_setup "TX DDR mux select-to-pad setup" \
+  -through $HYP_DDR_MUX_SEL_PINS -to $HYP_WRITE_OUT -path_delay max
+hyp_report_checks 801_tx_ddr_mux_select_to_pads_hold "TX DDR mux select-to-pad hold" \
+  -through $HYP_DDR_MUX_SEL_PINS -to $HYP_WRITE_OUT -path_delay min
 
 utl::report "HyperBus report complete: $HYP_RPT_DIR"

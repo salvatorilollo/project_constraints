@@ -4,8 +4,14 @@
 // The whole animation lives in HyperRAM (external DRAM); only ONE frame is ever
 // held in on-chip SRAM. This is the thing standalone Croc cannot do -- its SRAM
 // cannot hold the full frame sequence. Frame generation is a contiguous HyperRAM
-// write stream, so it also exercises the write-coalescing path you built, and we
-// time it so you get a number for the report.
+// write stream, so it also exercises the write-coalescing path you built.
+//
+// COLOR CONVENTION (important):
+//   Palette constants below are written in human-readable 0xRRGGBB.
+//   The NeoPixel block serializes its 24-bit FIFO word as-is, MSB first, and
+//   interprets it as GRB (bits[23:16]=G, [15:8]=R, [7:0]=B). So every pixel is
+//   converted RGB->GRB by rgb_to_grb() at the moment it is pushed to the FIFO.
+//   Do NOT also pre-swap the constants, or you double-swap.
 
 #include <stdint.h>
 #include "uart.h"
@@ -30,10 +36,6 @@
 #define TRACK       (WIDTH + CAR_W)         // columns for one full enter->exit lap
 
 // ---------------- animation knobs ---------
-// SIM:  most of the run time is the NeoPixel module serializing each frame at
-//       WS2812 rate (~1.9 ms/frame), and simulated time is expensive. Keep
-//       NUM_FRAMES small and FRAME_MS = 0 for a functional check.
-// HW:   raise LAPS / FRAME_MS / PLAY_LOOPS for a long, slow, looping animation.
 #define LAPS        1
 #define NUM_FRAMES  (LAPS * TRACK)          // distinct frames stored in HyperRAM
 #define FRAME_MS    0                       // extra per-frame delay (HW: ~50-80)
@@ -42,15 +44,14 @@
 // ---------------- memory map --------------
 #define HYP_RAM_BASE 0x30000000u
 static volatile uint32_t * const hyperram = (volatile uint32_t *)HYP_RAM_BASE;
-#define FENCE() __asm__ volatile("fence rw,rw" ::: "memory")
 
 // The ONLY on-chip copy: one frame. The full NUM_FRAMES sequence lives in HyperRAM.
 static uint32_t line[NUM_PIXELS];
 
-// ---------------- colors (0x00RRGGBB, same packing as your neopixel test) -----
+// ---------------- colors (human-readable 0xRRGGBB) ----------------------------
 #define COL_BG      0x000000u
 #define COL_BODY    0x400000u   // red
-#define COL_WINDOW  0x002040u   // cyan
+#define COL_WINDOW  0x002040u   // cyan-ish
 #define COL_WHEEL   0x202020u   // grey/white
 #define COL_ROAD    0x020202u   // dim road
 #define COL_DASH    0x303000u   // yellow lane dashes
@@ -67,6 +68,14 @@ static inline uint32_t car_color(uint8_t code) {
     if (code == 1) return COL_BODY;
     if (code == 2) return COL_WINDOW;
     return COL_WHEEL;
+}
+
+// Convert a 0xRRGGBB value to the GRB word the NeoPixel hardware serializes.
+static inline uint32_t rgb_to_grb(uint32_t rgb) {
+    uint32_t r = (rgb >> 16) & 0xFF;
+    uint32_t g = (rgb >>  8) & 0xFF;
+    uint32_t b =  rgb        & 0xFF;
+    return (g << 16) | (r << 8) | b;
 }
 
 // Build frame f into buf[64]: background + scrolling road + car at its position.
@@ -94,13 +103,15 @@ static void render_frame(uint32_t *buf, int f) {
     }
 }
 
-// your known-good FIFO send
+// FIFO send: convert each pixel RGB->GRB, then DRAIN before deactivating.
+// The mode write FLUSHES the FIFO, so deactivating before the serializer has
+// emptied it would drop the last FifoDepth pixels.
 static void neopixel_send_frame(uint32_t *pixels) {
     *reg32(NPX_BASE_ADDR, NPX_FIFO_REG_OFFSET) = NPX_FIFO_REG_MODE_FIFO;
     for (int i = 0; i < NUM_PIXELS; i++)
-        *reg32(NPX_BASE_ADDR, NPX_FIFO_DATA_REG_OFFSET) = pixels[i];
-
-    while (*reg32(NPX_BASE_ADDR, NPX_FIFO_DATA_REG_OFFSET) != 0); //drain before flush                                                    // drain before flush
+        *reg32(NPX_BASE_ADDR, NPX_FIFO_DATA_REG_OFFSET) = rgb_to_grb(pixels[i]);
+    while (*reg32(NPX_BASE_ADDR, NPX_FIFO_DATA_REG_OFFSET) != 0)
+        ; // wait for the serializer to drain the FIFO
     *reg32(NPX_BASE_ADDR, NPX_FIFO_REG_OFFSET) = NPX_FIFO_REG_DEACTIVATED;
 }
 
@@ -113,19 +124,14 @@ static inline uint32_t read_mcycle(void) {
 // Generate the whole animation into HyperRAM. Each frame is 64 contiguous words,
 // so this is exactly the contiguous-write workload your coalescing accelerates.
 static void generate_to_hyperram(void) {
-    FENCE();
     for (int f = 0; f < NUM_FRAMES; f++) {
         render_frame(line, f);
-        uint32_t base = (uint32_t)f * NUM_PIXELS;
+        uint32_t base = (uint32_t)f * NUM_PIXELS;    // *64 -> shift, no hw multiply
         for (int i = 0; i < NUM_PIXELS; i++)
             hyperram[base + i] = line[i];
     }
-    // read back one word per frame so every frame's burst is flushed, not just the last
-    volatile uint32_t drain = 0;
-    for (int f = 0; f < NUM_FRAMES; f++)
-        drain += hyperram[(uint32_t)f * NUM_PIXELS];
-    (void)drain;
-    FENCE();
+    // force the last coalesced write to drain before we stop the timer
+    (void)hyperram[(uint32_t)(NUM_FRAMES - 1) * NUM_PIXELS];
 }
 
 // Stream each frame from HyperRAM through the one-frame SRAM buffer to the matrix.
@@ -153,7 +159,6 @@ int main(void) {
     generate_to_hyperram();
     uint32_t t1 = read_mcycle();
 
-    // optional diagnostics -- need %x support in your printf; safe to delete
     printf("frames=0x%x  gen_cyc=0x%x\n",
            (unsigned)NUM_FRAMES, (unsigned)(t1 - t0));
     printf("hyperram_bytes=0x%x  sram_frame_bytes=0x%x\n",

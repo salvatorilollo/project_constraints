@@ -64,6 +64,9 @@ module hyperbus_phy import hyperbus_pkg::*; #(
     localparam int unsigned RxOutstandingLimit = (RxFifoDepth > RxFifoStopMargin) ?
                                                  (RxFifoDepth - RxFifoStopMargin) : 1;
 
+    localparam int unsigned MaxStopCycles = 50; // Maximum number of cycles to stop the clock for coalescing
+    localparam int unsigned MaxCsLowCycles = 350; // ~3.5us at 100MHz clk_i, safely under 4us tCSM
+
     logic [1:0]                  phys_in_use;
 
     assign phys_in_use = (NumPhys==2) ? (cfg_i.phys_in_use + 1) : 1;
@@ -98,6 +101,7 @@ module hyperbus_phy import hyperbus_pkg::*; #(
     logic ctl_rcnt_ena;
     logic ctl_wclk_ena;
     logic rx_outstanding_room;
+    logic coalesced;
 
     // Command-address
     hyper_phy_ca_t  ca;
@@ -185,6 +189,7 @@ module hyperbus_phy import hyperbus_pkg::*; #(
             trx_tx_rwds     = ~tx_strb_i;
             tx_ready_o      = 1'b1;     // Memory always ready within HyperBus burst
             ctl_wclk_ena   = tx_valid_i;
+            
         end
     end
 
@@ -223,6 +228,20 @@ module hyperbus_phy import hyperbus_pkg::*; #(
         else if (r_outstand_dec & ~r_outstand_inc)  r_outstand_q <= r_outstand_q - 1;
     end
 
+    // tCSM: cumulative CS#-low budget (independent of timer_q)
+    logic [TimerWidth-1:0] cs_low_q;
+    logic cs_asserted, cs_budget_hit;
+
+    // CS# is high only in Idle / Startup / WaitRWR (trx_cs_ena = 0 there)
+    assign cs_asserted   = (state_q != Idle) & (state_q != Startup) & (state_q != WaitRWR);
+    assign cs_budget_hit = (cs_low_q >= MaxCsLowCycles);   // tCSM minus margin, in cycles
+
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni)           cs_low_q <= '0;
+        else if (~cs_asserted) cs_low_q <= '0;             // refresh
+        else                   cs_low_q <= cs_low_q + 1;   // accumulate
+    end
+
     // =============
     //    Control
     // =============
@@ -241,6 +260,15 @@ module hyperbus_phy import hyperbus_pkg::*; #(
     assign ctl_timer_zero       = (timer_q == 0);
 
     assign busy_o = (state_q != Idle);
+
+    //check if possible to coalesce
+    assign coalesced = trans_i.write                        // new transfer is a write
+                 &  tf_q.write                           // previous segment was a write
+                 & ~trans_i.address_space                // memory space, not register
+                 & ~tf_q.address_space
+                 & (trans_cs_i == cs_q)                  // same chip
+                 & (trans_i.address == tf_q.address);    // picks up exactly where we left off
+
 
     // FSM logic
     always_comb begin : proc_comb_phy_fsm
@@ -407,16 +435,50 @@ module hyperbus_phy import hyperbus_pkg::*; #(
                     tf_d.address    = tf_q.address + 1;
                     if (ctl_tf_burst_last) begin
                         b_pending_set   = 1'b1;
-                        timer_d = cfg_i.t_csh_cycles;
-                        state_d         = WaitXfer;
+                        timer_d  =      MaxStopCycles;
+                        state_d         = ClockStop; //stop clock to coalesce if possible
                     end
                 end
                 // Force-terminate access on burst time limit
-                if (ctl_timer_one) begin
+                if (ctl_timer_one | cs_budget_hit) begin
                     timer_d = cfg_i.t_csh_cycles;
                     state_d = WaitXfer;
                 end
+
             end
+
+            ClockStop: begin
+                //Clock Stop state for coalescing
+                trx_clk_ena = 1'b0; //disable clock in Hyperram
+
+                 if (cs_budget_hit) begin                    // must raise CS# even if we could coalesce
+                    timer_d     = cfg_i.t_csh_cycles;
+                    trx_clk_ena = 1'b1;
+                    state_d     = WaitXfer;                 // -> WaitRWR (CS# high) -> Idle
+
+                 end else if (trans_valid_i & coalesced & ~b_pending_q) begin
+                    trans_ready_o  = 1'b1;        // consume the transfer
+                    tf_d           = trans_i;     // reload burst length + address + flags
+                    cs_d           = trans_cs_i;
+                    trx_tx_data_oe = 1'b1;        // hold the DQ driver on into Write
+                    timer_d        = cfg_i.t_burst_max;
+                    state_d        = Write;
+                end
+
+                else if(trans_valid_i & ~coalesced) begin
+                    timer_d = cfg_i.t_csh_cycles;
+                    trx_clk_ena = 1'b1; //re-enable clock to end coalescing
+                    state_d = WaitXfer; //we move on as if clock stop did not exist
+                end
+
+                else if(ctl_timer_one) begin //timeout
+                    timer_d = cfg_i.t_csh_cycles;
+                    trx_clk_ena = 1'b1; //re-enable clock
+                    state_d = Idle; //skip Wait states because we already waited a lot
+                end
+
+            end
+
             WaitXfer: begin
                 // Wait for FFed Clock and output to stop
                 // May have to be prolonged for potential future devices with t_CSH > 0

@@ -171,7 +171,7 @@ set delayInstTx "i_croc_soc/i_user/i_hyperbus/i_tx_clk_delay/i_delay_tx_clk_90"
 set blk    [ord::get_db_block]
 set delayH [ord::dbu_to_microns [[[$blk findInst $delayInstRx] getMaster] getHeight]]
 
-set delayX 1386.0
+set delayX 1380.0
 set rxY    1150.0
 set gap    15.0
 set txY    [expr {$rxY + $delayH + $gap}]

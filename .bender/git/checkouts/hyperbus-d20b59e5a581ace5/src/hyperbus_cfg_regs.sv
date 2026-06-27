@@ -34,9 +34,11 @@ module hyperbus_cfg_regs #(
     localparam int unsigned NumRegs         = 2*NumChips + NumBaseRegs;
     localparam int unsigned RegsBits        = cf_math_pkg::idx_width(NumRegs);
     localparam int unsigned RegStrbWidth    = RegDataWidth/8;
+    localparam int unsigned ChipIdxWidth    = cf_math_pkg::idx_width(NumChips);
 
     // Data and index types
     typedef logic [RegsBits-1:0]        reg_idx_t;
+    typedef logic [ChipIdxWidth-1:0]    chip_idx_t;
     typedef logic [RegDataWidth-1:0]    reg_data_t;
 
     // Local signals
@@ -55,6 +57,7 @@ module hyperbus_cfg_regs #(
     // Read from register
     always_comb begin : proc_comb_read
         reg_data_t [NumRegs-1:0] rfield;
+        rfield = '0;
         reg_rsp_o.rdata = '0;
         if (sel_reg_mapped) begin
             rfield = {
@@ -83,10 +86,14 @@ module hyperbus_cfg_regs #(
 
     // Write to register
     always_comb begin : proc_comb_write
-        logic  chip_reg;
-        logic [$clog2(NumChips)-1:0] sel_chip;
+        logic [ChipIdxWidth:0] chip_reg_sel;
+        chip_idx_t             sel_chip;
+        logic                  chip_reg;
         cfg_d     = cfg_q;
         crange_d  = crange_q;
+        chip_reg_sel = '0;
+        sel_chip = '0;
+        chip_reg = 1'b0;
         if (reg_req_i.valid & reg_req_i.write & sel_reg_mapped) begin
             case (sel_reg)
                 'h0: cfg_d.t_latency_access         = (~wmask & cfg_q.t_latency_access        ) | (wmask & reg_req_i.wdata);
@@ -102,7 +109,9 @@ module hyperbus_cfg_regs #(
                 'ha: cfg_d.t_csh_cycles             = (~wmask & cfg_q.t_csh_cycles            ) | (wmask & reg_req_i.wdata);
                 'hb: cfg_d.csn_to_ck_cycles         = (~wmask & cfg_q.csn_to_ck_cycles        ) | (wmask & reg_req_i.wdata);
                 default: begin
-                    {sel_chip, chip_reg} = sel_reg - NumBaseRegs;
+                    chip_reg_sel = sel_reg - reg_idx_t'(NumBaseRegs);
+                    sel_chip = chip_reg_sel[ChipIdxWidth:1];
+                    chip_reg = chip_reg_sel[0];
                     crange_d[sel_chip][chip_reg] = (~wmask & crange_q[sel_chip][chip_reg]) |  (wmask & reg_req_i.wdata);
                 end
             endcase // sel_reg

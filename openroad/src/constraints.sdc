@@ -167,10 +167,12 @@ set HYP_HALF          [expr 0.50 * $HYP_TCK]
 set HYP_QUARTER       [expr 0.25 * $HYP_TCK]
 
 # Interface margins: READ is DQ-vs-RWDS skew, OUT is CK-vs-DQ/RWDS skew, CTRL is
-# CK-vs-control skew.  Include board/device mismatch here.
+# CK-vs-control skew.  CS# is a transaction-framing control, so keep its margin
+# separate from DQ/RWDS/OE timing.
 set HYP_OUT_SKEW       0.55
 set HYP_READ_SKEW      0.90
 set HYP_CTRL_SKEW      0.55
+set HYP_CS_SKEW        0.60
 set CLK_UNCERTAINTY    0.05
 
 ######################
@@ -199,6 +201,8 @@ set HYP_CKN_OUT    [get_ports {hyper_ck_no}]
 set HYP_CS_OUT     [get_ports {hyper_cs_no}]
 set HYP_RESET_OUT  [get_ports {hyper_reset_no}]
 set HYP_CK_C2P     [get_pins {pad_hyper_ck_o/c2p}]
+set HYP_RESET_C2P  [get_pins {pad_hyper_reset_no/c2p}]
+set HYP_BIDIR_PAD_PORTS [concat $HYP_DQ_PAD_PORTS $HYP_RWDS_PAD_PORT]
 
 hyp_assert_nonempty HYP_DQ_PAD_PORTS  $HYP_DQ_PAD_PORTS
 hyp_assert_nonempty HYP_RWDS_PAD_PORT $HYP_RWDS_PAD_PORT
@@ -211,6 +215,8 @@ hyp_assert_nonempty HYP_CKN_OUT    $HYP_CKN_OUT
 hyp_assert_nonempty HYP_CS_OUT     $HYP_CS_OUT
 hyp_assert_nonempty HYP_RESET_OUT  $HYP_RESET_OUT
 hyp_assert_nonempty HYP_CK_C2P     $HYP_CK_C2P
+hyp_assert_nonempty HYP_RESET_C2P  $HYP_RESET_C2P
+hyp_assert_nonempty HYP_BIDIR_PAD_PORTS $HYP_BIDIR_PAD_PORTS
 
 ###################
 ## Primary Clock ##
@@ -223,7 +229,7 @@ set_case_analysis 0 [get_ports testmode_i]
 set_input_delay -clock clk_sys -max [expr 0.10 * $HYP_TCK] [get_ports testmode_i]
 set_false_path -hold -from [get_ports testmode_i]
 
-# rst_ni is asynchronous and also feeds HyperBus RESET# directly.
+# rst_ni is asynchronous; HyperBus RESET# release is checked separately below.
 set_input_delay -clock clk_sys -max [expr 0.10 * $HYP_TCK] [get_ports rst_ni]
 set_false_path -hold -from [get_ports rst_ni]
 
@@ -327,6 +333,16 @@ set_clock_transition  0.05 [get_clocks {
   clk_hyp_rwds_edge clk_hyp_rwds_capture clk_hyp_rwds_sample
 }]
 
+############################
+## Top-Port Audit Markers ##
+############################
+
+# OpenSTA's port audit does not see the core-side pad-pin checks below.  These
+# max-only top-level markers keep check_setup warnings focused without adding
+# artificial hold checks on the bidirectional pad pins.
+set_input_delay  -max -add_delay -clock clk_hyp_rwds_read_virt [expr -$HYP_TCK] $HYP_BIDIR_PAD_PORTS
+set_output_delay -max -add_delay -clock clk_hyp_ck_out            0.0          $HYP_BIDIR_PAD_PORTS
+
 ##########################
 ## Write And CA Outputs ##
 ##########################
@@ -365,9 +381,10 @@ set HYP_OE_BUDGET [expr $HYP_QUARTER - $HYP_CTRL_SKEW]
 set_output_delay -max -add_delay -clock clk_hyp_ck_core $HYP_OE_BUDGET $HYP_WRITE_OE
 set_output_delay -min -add_delay -clock clk_hyp_ck_core $HYP_OE_BUDGET $HYP_WRITE_OE
 
-# CS# is single-data-rate and must be stable around CK start/stop.
-set_output_delay -max -add_delay -clock clk_hyp_ck_out [expr $HYP_HALF - $HYP_CTRL_SKEW] $HYP_CS_OUT
-set_output_delay -min -add_delay -clock clk_hyp_ck_out [expr             $HYP_CTRL_SKEW] $HYP_CS_OUT
+# CS# is single-data-rate and only frames transactions; keep it away from CK
+# start/stop, but do not bind it to the tighter DQ/RWDS/OE margin.
+set_output_delay -max -add_delay -clock clk_hyp_ck_out [expr $HYP_HALF - $HYP_CS_SKEW] $HYP_CS_OUT
+set_output_delay -min -add_delay -clock clk_hyp_ck_out [expr             $HYP_CS_SKEW] $HYP_CS_OUT
 
 # Mark CK/CK# top-level outputs as intentionally constrained.
 set_output_delay -max -add_delay -clock clk_hyp_tx_90 0.0 $HYP_CK_OUT
@@ -375,9 +392,13 @@ set_output_delay -min -add_delay -clock clk_hyp_tx_90 0.0 $HYP_CK_OUT
 set_output_delay -max -add_delay -clock clk_hyp_tx_90 0.0 $HYP_CKN_OUT
 set_output_delay -min -add_delay -clock clk_hyp_tx_90 0.0 $HYP_CKN_OUT
 
-# RESET# is an asynchronous rst_ni passthrough with a bounded propagation budget.
-set_max_delay [expr 2.0 * $HYP_TCK] -from [get_ports rst_ni] -to $HYP_RESET_OUT -ignore_clock_latency
-set_false_path -hold -from [get_ports rst_ni] -to $HYP_RESET_OUT
+# RESET# release is driven by the normal-mode reset synchronizer through the
+# output pad.  Keep a bounded release path and mark the top port constrained.
+set HYP_RESET_RELEASE_BUDGET $HYP_TCK
+set_output_delay -max -add_delay -clock clk_sys 0.0 $HYP_RESET_OUT
+set_output_delay -min -add_delay -clock clk_sys 0.0 $HYP_RESET_OUT
+set_max_delay $HYP_RESET_RELEASE_BUDGET -from [get_clocks clk_sys] -to $HYP_RESET_OUT -ignore_clock_latency
+set_min_delay 0.0                       -from [get_clocks clk_sys] -to $HYP_RESET_OUT -ignore_clock_latency
 
 #############################
 ## RWDS Latency Indicator  ##

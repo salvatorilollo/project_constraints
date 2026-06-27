@@ -34,8 +34,6 @@ load_checkpoint 02_${proj_name}.placed
 setDefaultParasitics
 set_dont_use $dont_use_cells
 
-report_clock_properties
-
 
 utl::report "###############################################################################"
 utl::report "# Stage 03: CLOCK TREE SYNTHESIS"
@@ -43,11 +41,33 @@ utl::report "###################################################################
 
 # Note: clock_nets variable was set in stage_01 and saved in checkpoint
 # Unset dont_touch on clock nets so CTS can insert buffers
-set clock_nets [get_nets -of_objects [get_pins -of_objects "*_reg" -filter "name == CLK"]]
+set clock_pins [get_pins -of_objects "*_reg" -filter "name == CLK || name == CK"]
+if {[llength $clock_pins] == 0} {
+  error "No register clock pins found for CTS dont_touch cleanup"
+}
+set clock_nets [get_nets -of_objects $clock_pins]
+if {[llength $clock_nets] == 0} {
+  error "No register clock nets found for CTS dont_touch cleanup"
+}
 unset_dont_touch $clock_nets
 
+# Keep HyperBus protocol clock phase points stable while cloning generic clock
+# inverters for CTS.
+set hyperbus_sensitive_clock_inverters [concat \
+  [get_cells -quiet -hierarchical {*i_trx/_22_}] \
+  [get_cells -quiet -hierarchical {*i_trx/i_clock_diff_out/i_hyper_ck_no_inv/i_inv}] \
+  [get_cells -quiet -hierarchical {*i_trx/i_rwds_clk_inverter/i_inv}]]
+if {[llength $hyperbus_sensitive_clock_inverters] != 3} {
+  error "Expected 3 HyperBus clock inverters for CTS protection, found [llength $hyperbus_sensitive_clock_inverters]"
+}
+
 utl::report "Repair clock inverters"
-repair_clock_inverters
+set_dont_touch $hyperbus_sensitive_clock_inverters
+try {
+  repair_clock_inverters
+} finally {
+  unset_dont_touch $hyperbus_sensitive_clock_inverters
+}
 
 utl::report "Clock Tree Synthesis"
 

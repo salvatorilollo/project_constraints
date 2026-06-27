@@ -11,7 +11,7 @@ tvf::set_global_variable globPort {NO}
 
 tvf::VERBATIM {
 //
-//  Rule file generated on Thu Jun 25 16:07:44 CEST 2026
+//  Rule file generated on Sat Jun 27 22:05:25 CEST 2026
 //     by Calibre Interactive - LVS (v2021.3_35.19)
 //
 //      *** PLEASE DO NOT MODIFY THIS FILE ***
